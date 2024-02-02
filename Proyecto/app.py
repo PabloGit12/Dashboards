@@ -12,6 +12,9 @@ mysql = MySQL()
 def index():
     return render_template('index.html')
 
+@app.route('/solicitud')
+def solicitud():
+    return render_template('Solicitud.html')
 
 
 if __name__ == '__main__':
