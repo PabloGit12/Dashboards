@@ -16,6 +16,9 @@ def index():
 def solicitud():
     return render_template('Solicitud.html')
 
+@app.route('/consultas')
+def consultas():
+    return render_template('Consultas.html')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

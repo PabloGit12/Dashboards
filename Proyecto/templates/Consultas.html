@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Tickets</title>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <style>
+        body {
+            text-align: center;
+            background-color: #333; /* Fondo oscuro */
+            color: #fff; /* Texto blanco */
+            margin: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h2 {
+            color: #9b82ff; /* Color morado */
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555; /* Texto gris oscuro */
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc; /* Borde gris claro */
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #d582ff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        table, th, td {
+            border: 1px solid #d582ff; /* Borde morado */
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            color: #333; /* Texto oscuro */
+        }
+
+        th {
+            background-color: #d582ff;
+            color: #fff;
+        }
+
+        .acciones {
+            margin-top: 20px;
+        }
+
+        .acciones button {
+            margin-right: 10px;
+        }
+        .logo {
+            position: absolute;
+            top: 70px; 
+            left: 110px;
+        }
+        
+        .logo img {
+            width: 250px; 
+        }
+        
+    
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+
+
+    <h2>Consulta de Tickets</h2>
+    <form action="consulta_tickets.php" method="post">
+        <label for="numero_ticket">Número de Ticket:</label>
+        <input type="text" id="numero_ticket" name="numero_ticket" required>
+
+        <button type="submit">Consultar Ticket</button>
+    </form>
+
+    <!-- Tabla de Resultados -->
+    <table>
+        <tr>
+            <th>No. Ticket</th>
+            <th>Nombre</th>
+            <th>Departamento</th>
+            <th>Fecha</th>
+            <th>Clasificación</th>
+            <th>Detalles</th>
+            <th>Estatus</th>
+        </tr>
+  
+        <tr>
+            <td>001</td>
+            <td>Akemi Pérez Nakagawa</td>
+            <td>Compras</td>
+            <td>2024-02-02</td>
+            <td>Cliente</td>
+            <td>Mantenimiento Preventivo</td>
+            <td>Asignado</td>
+        </tr>
+
+        <tr>
+            <td>002</td>
+            <td>Myriam Guadalupe Gudiño Araujo</td>
+            <td>Logística</td>
+            <td>2024-02-02</td>
+            <td>Auxiliar</td>
+            <td>Fallas de Office</td>
+            <td>Completado</td>
+        </tr>
+
+        <tr>
+            <td>002</td>
+            <td>Ana Belem Mex Miranda</td>
+            <td>Contabilidad</td>
+            <td>2024-02-02</td>
+            <td>Cliente</td>
+            <td>Fallas en la Red</td>
+            <td>En Proceso</td>
+        </tr>
+    </table>
+
+    <!-- Botones de Acciones -->
+    <div class="acciones">
+        <button onclick="agregarTicket()">Agregar</button>
+        <button onclick="eliminarFila()">Eliminar</button>
+    </div>
+
+    <script>
+        function agregarTicket() {
+            // Aquí puedes agregar lógica para manejar la acción de agregar
+            alert("¿Deseas agregar otro ticket?");
+        }
+
+        function eliminarFila() {
+            var table = document.querySelector('table');
+            var rowCount = table.rows.length;
+            if (rowCount > 1) {
+                table.deleteRow(rowCount - 1);
+            } else {
+                alert("No hay filas para eliminar.");
+            }
+        }
+    </script>
+</body>
+</html>
