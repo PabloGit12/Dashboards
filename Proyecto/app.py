@@ -25,6 +25,10 @@ def cliente():
 def solicitud():
     return render_template('solicitud.html')
 
+@app.route('/consultas')
+def consultas():
+    return render_template('Consultas.html')
+
     
 @app.route('/guardar', methods=['POST'])
 def guardar():
@@ -40,23 +44,53 @@ def guardar():
         else:
             flash('Usuario o contraseña incorrectos', 'error')
             return redirect(url_for('index'))
+        
+@app.route('/procesar_solicitud', methods=['POST'])
+def procesar_solicitud():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        tipo_soporte = request.form['tipo_soporte']
+        detalles = request.form['detalles']
+        fecha = request.form['fecha']
+        clasificacion = request.form['clasificacion']
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO solicitudes (nombre, tipo_soporte, detalles, fecha, clasificacion) VALUES (%s, %s, %s, %s, %s)", (nombre, tipo_soporte, detalles, fecha, clasificacion))
+        mysql.connection.commit()
+        cur.close()
+        flash('Solicitud enviada correctamente')
+        return redirect(url_for('consultas'))
+    
+@app.route('/consulta_tickets', methods=['GET'])
+def consulta_tickets():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM solicitudes")
+    solicitudes = cur.fetchall()
+    cur.close()
+    return render_template('consultas.html', solicitudes=solicitudes)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+from flask import jsonify
 
+@app.route('/solicitudes', methods=['GET'])
+def obtener_solicitudes():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM solicitudes")
+    solicitudes = cur.fetchall()
+    cur.close()
 
-@app.route('/solicitud')
-def solicitud():
-    return render_template('Solicitud.html')
+    # Formatear los datos como una lista de objetos JSON
+    solicitudes_formateadas = []
+    for solicitud in solicitudes:
+        solicitud_formateada = {
+            'id': solicitud[0],
+            'nombre': solicitud[1],
+            'tipo_soporte': solicitud[2],
+            'fecha': solicitud[3],
+            'clasificacion': solicitud[4],
+            'detalles': solicitud[5]
+        }
+        solicitudes_formateadas.append(solicitud_formateada)
 
-@app.route('/consultas')
-def consultas():
-    return render_template('Consultas.html')
-
-@app.route('/cliente')
-def cliente():
-    return render_template('cliente.html')
-
+    return jsonify(solicitudes_formateadas)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
