@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect,  url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -6,9 +6,10 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'dbticket'
-app.secret_key='mysecretkey'
+app.secret_key = 'mysecretkey'
 
-mysql= MySQL(app)
+mysql = MySQL(app)
+
 
 @app.route('/')
 def index():
