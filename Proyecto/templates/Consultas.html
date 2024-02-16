@@ -107,7 +107,7 @@
     <h2>Consulta de Tickets</h2>
     <form action="consulta_tickets.php" method="post">
         <label for="numero_ticket">Número de Ticket:</label>
-        <input type="text" id="numero_ticket" name="numero_ticket" required>
+        <input type="text" id="buscar_ticket" placeholder="Buscar ticket" oninput="buscarTicket()">
 
         <button type="submit">Consultar Ticket</button>
     </form>
@@ -118,54 +118,53 @@
             <th>No. Ticket</th>
             <th>Nombre</th>
             <th>Departamento</th>
-            <th>Fecha</th>
             <th>Clasificación</th>
+            <th>Fecha</th>
             <th>Detalles</th>
             <th>Estatus</th>
         </tr>
-  
+        {% for solicitud in solicitudes %}
         <tr>
-            <td>001</td>
-            <td>Akemi Pérez Nakagawa</td>
-            <td>Compras</td>
-            <td>2024-02-02</td>
-            <td>Cliente</td>
-            <td>Mantenimiento Preventivo</td>
-            <td>Asignado</td>
+            <td>{{ solicitud.id }}</td>
+            <td>{{ solicitud.nombre }}</td>
+            <td>{{ solicitud.tipo_soporte }}</td>
+            <td>{{ solicitud.clasificacion }}</td>
+            <td>{{ solicitud.fecha }}</td>
+            <td>{{ solicitud.detalles }}</td>
+            <td>Pendiente</td> <!-- O el estatus que tengas en tu base de datos -->
         </tr>
-
-        <tr>
-            <td>002</td>
-            <td>Myriam Guadalupe Gudiño Araujo</td>
-            <td>Logística</td>
-            <td>2024-02-02</td>
-            <td>Auxiliar</td>
-            <td>Fallas de Office</td>
-            <td>Completado</td>
-        </tr>
-
-        <tr>
-            <td>002</td>
-            <td>Ana Belem Mex Miranda</td>
-            <td>Contabilidad</td>
-            <td>2024-02-02</td>
-            <td>Cliente</td>
-            <td>Fallas en la Red</td>
-            <td>En Proceso</td>
-        </tr>
+        {% endfor %}
     </table>
+    
 
     <!-- Botones de Acciones -->
     <div class="acciones">
-        <button onclick="agregarTicket()">Agregar</button>
         <button onclick="eliminarFila()">Eliminar</button>
     </div>
 
     <script>
-        function agregarTicket() {
-            // Aquí puedes agregar lógica para manejar la acción de agregar
-            alert("¿Deseas agregar otro ticket?");
-        }
+        // Hacer una solicitud AJAX para obtener las solicitudes
+        fetch('/solicitudes')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Imprimir los datos en la consola
+        data.forEach(solicitud => {
+            var table = document.querySelector('table');
+            var row = table.insertRow(-1);
+            ['id', 'nombre', 'tipo_soporte', 'fecha', 'clasificacion', 'detalles'].forEach(propiedad => {
+                var cell = row.insertCell(-1);
+                cell.textContent = solicitud[propiedad];
+            });
+            // Agregar el estatus (en este caso, 'Pendiente') como una celda adicional
+            var cellEstatus = row.insertCell(-1);
+            cellEstatus.textContent = 'Pendiente';
+        });
+    })
+    .catch(error => {
+        console.error('Error al obtener las solicitudes:', error);
+    });
+
+
 
         function eliminarFila() {
             var table = document.querySelector('table');
@@ -174,6 +173,31 @@
                 table.deleteRow(rowCount - 1);
             } else {
                 alert("No hay filas para eliminar.");
+            }
+        }
+
+        function buscarTicket() {
+            var input, filtro, tabla, filas, celdas, texto;
+            input = document.getElementById("buscar_ticket");
+            filtro = input.value.toUpperCase();
+            tabla = document.querySelector("table");
+            filas = tabla.getElementsByTagName("tr");
+
+            // Iterar sobre todas las filas de la tabla
+            for (var i = 1; i < filas.length; i++) { // Empezamos desde 1 para omitir la fila de encabezados
+                celdas = filas[i].getElementsByTagName("td");
+                var mostrarFila = false;
+                // Iterar sobre todas las celdas de la fila
+                for (var j = 0; j < celdas.length; j++) {
+                    texto = celdas[j].textContent.toUpperCase();
+                    // Si el texto de alguna celda coincide con el filtro, mostramos la fila
+                    if (texto.indexOf(filtro) > -1) {
+                        mostrarFila = true;
+                        break;
+                    }
+                }
+                // Mostrar u ocultar la fila según corresponda
+                filas[i].style.display = mostrarFila ? "" : "none";
             }
         }
     </script>
