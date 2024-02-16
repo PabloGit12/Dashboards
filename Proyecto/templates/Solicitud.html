@@ -1,63 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitud</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background: url(../sources/FONDO.jpg) center/cover no-repeat fixed;
+        }
+
+    
+        .logo {
+            max-width: 210px; 
+            margin-bottom: 20px; 
+            
+        }
+
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #800080; 
+        }
+        
+        .form-label {
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .form-control {
+            border: 1px solid #000000;
+        }
+
+        .btn-primary {
+            background-color: #816577;
+            border-color: #816577;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #000000;
+            border-color: #000000;
+        }
+    </style>
+    <script>
+        $(function () {
+            $("#inputFecha").datepicker();
+        });
+    </script>
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Sistema de Tickets</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Solicitar Ticket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Consultar Ticket</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+
+<body>
+    <img src="../sources/logo3.png" alt="Logo" class="logo">
 
     <div class="container mt-5">
-        <h1 class="text-center">Solicitud de ticket</h1>
-        <form class="row g-3 mt-3">
+        <h1>Solicitud de ticket</h1>
+        <form class="row g-3">
             <div class="col-md-6">
-                <label for="inputEmail4" class="form-label">Nombre</label>
-                <input type="email" class="form-control" id="inputEmail4" placeholder="Escribe tu Nombre">
+                <label for="inputNombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="inputNombre" placeholder="Escribe tu Nombre">
+                <p> </p>
             </div>
             <div class="col-md-6">
-                <label for="inputAddress" class="form-label">Tipo de soporte</label>
-                <input type="text" class="form-control" id="" placeholder="Escribe el tipo de soporte">
+                <label for="inputSoporte" class="form-label">Tipo de soporte</label>
+                <input type="text" class="form-control" id="inputSoporte" placeholder="Escribe el tipo de soporte">
+                <p> </p>
             </div>
             <div class="col-12">
-                <label for="inputAddress" class="form-label">Detalles</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="Escribe los Detalles">
+                <label for="inputDetalles" class="form-label">Detalles</label>
+                <input type="text" class="form-control" id="inputDetalles" placeholder="Escribe los Detalles">
+                <p> </p>
             </div>
             <div class="col-12">
-                <label for="inputAddress2" class="form-label">Fecha</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Escribe la fecha">
+                <label for="inputFecha" class="form-label">Fecha</label>
+                <input type="text" class="form-control" id="inputFecha" placeholder="Selecciona la fecha">
+                <p> </p>
             </div>
             <div class="col-md-6">
-                <label for="inputCity" class="form-label">Clasificacion</label>
-                <input type="text" class="form-control" id="inputCity" >
+                <label for="inputClasificacion" class="form-label">Clasificación</label>
+                <input type="text" class="form-control" id="inputClasificacion">
+                <p> </p>
             </div>
-            
             <div class="col-md-12">
-                <button type="button" class="btn btn-outline-primary">Solicitar</button>
+                <button type="button" class="btn btn-primary">Solicitar</button>
             </div>
         </form>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
+
 </html>
