@@ -68,68 +68,34 @@
 
 <body>
     <img src="../sources/logo3.png" alt="Logo" class="logo">
-
-    <div class="container mt-5">
-        <h1>Solicitud de ticket</h1>
-        <form class="row g-3">
-            <div class="col-md-6">
-                <label for="inputNombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="inputNombre" placeholder="Escribe tu Nombre">
-                <p> </p>
-            </div>
-            <div class="col-md-6">
-                <label for="inputSoporte" class="form-label">Tipo de soporte</label>
-                <input type="text" class="form-control" id="inputSoporte" placeholder="Escribe el tipo de soporte">
-                <p> </p>
-            </div>
-            <div class="col-12">
-                <label for="inputDetalles" class="form-label">Detalles</label>
-                <input type="text" class="form-control" id="inputDetalles" placeholder="Escribe los Detalles">
-                <p> </p>
-            </div>
-            <div class="col-12">
-                <label for="inputFecha" class="form-label">Fecha</label>
-                <input type="text" class="form-control" id="inputFecha" placeholder="Selecciona la fecha">
-                <p> </p>
-            </div>
-            <div class="col-md-6">
-                <label for="inputClasificacion" class="form-label">Clasificación</label>
-                <input type="text" class="form-control" id="inputClasificacion">
-                <p> </p>
-            </div>
-            <div class="col-md-12">
-                <button type="button" class="btn btn-primary">Solicitar</button>
-            </div>
-        </form>
-    </div>
 <body class="bg-light">
 
     <div class="container mt-5">
         <h1 class="text-center">Solicitud de ticket</h1>
         <form class="mt-3" method="POST" action="{{ url_for('procesar_solicitud') }}">
-            <div class="form-group">
-                <label for="inputEmail4">Nombre</label>
-                <input type="text" name="nombre" class="form-control" id="inputEmail4" placeholder="Escribe tu Nombre">
+            <div class="form-group col-md-6">
+                <label for="inputNombre" class="form-label">Nombre</label>
+                <input type="text" name="nombre" class="form-control" id="inputNombre" placeholder="Escribe tu Nombre">
             </div>
-            <div class="form-group">
-                <label for="inputAddress">Tipo de soporte</label>
-                <input type="text" name="tipo_soporte" class="form-control" id="inputAddress" placeholder="Escribe el tipo de soporte">
+            <div class="form-group col-md-6">
+                <label for="inputSoporte" class="form-label">Tipo de soporte</label>
+                <input type="text" name="tipo_soporte" class="form-control" id="inputSoporte" placeholder="Escribe el tipo de soporte">
             </div>
-            <div class="form-group">
-                <label for="inputAddress2">Detalles</label>
-                <input type="text" name="detalles" class="form-control" id="inputAddress2" placeholder="Escribe los Detalles">
+            <div class="form-group col-12">
+                <label for="inputDetalles" class="form-label">Detalles</label>
+                <input type="text" name="detalles" class="form-control" id="inputDetalles" placeholder="Escribe los Detalles">
             </div>
-            <div class="form-group">
-                <label for="inputAddress3">Fecha</label>
-                <input type="text" name="fecha" class="form-control" id="inputAddress3" placeholder="Escribe la fecha">
+            <div class="form-group col-12">
+                <label for="inputFecha" class="form-label">Fecha</label>
+                <input type="date" name="fecha" class="form-control" id="inputFecha" placeholder="Escribe la fecha">
             </div>
-            <div class="form-group">
-                <label for="inputCity">Clasificación</label>
-                <input type="text" name="clasificacion" class="form-control" id="inputCity" placeholder="Escribe la clasificacion">
+            <div class="form-group col-md-6">
+                <label for="inputClasificacion" class="form-label">Clasificación</label>
+                <input type="text" name="clasificacion" class="form-control" id="inputClasificacion" placeholder="Escribe la clasificacion">
             </div>
             
-            <div class="form-group text-center">
-                <button type="submit" class="btn btn-outline-primary">Solicitar</button>
+            <div class="form-group text-center col-md-12">
+                <button type="submit" class="btn btn-primary">Solicitar</button>
             </div>
         </form>
     </div>
