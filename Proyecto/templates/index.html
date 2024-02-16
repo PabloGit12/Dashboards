@@ -64,18 +64,11 @@
 </head>
 
 <body>
-    <img src="../sources/logo3.png" alt="Logo" class="logo">
+    <img src="../static/logo3.png" alt="logo3" class="logo">
     <div class="container">
         <h1>LOGIN</h1>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
         <ul>
-            {% for message in messages %}
-            <li style="color: red;">{{ message }}</li>
-            {% endfor %}
         </ul>
-        {% endif %}
-        {% endwith %}
         <form method="POST" action="/guardar">
             <div class="mb-3">
                 <label for="txtdepartamento" class="form-label">Departamento:</label>
