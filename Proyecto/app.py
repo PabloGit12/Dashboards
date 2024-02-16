@@ -17,19 +17,32 @@ def index():
     consulta = curSelect.fetchall()
     return render_template('index.html', consulta=consulta)
 
+@app.route('/cliente')
+def cliente():
+    return render_template('cliente.html')
+
+@app.route('/solicitud')
+def solicitud():
+    return render_template('solicitud.html')
+
     
 @app.route('/guardar', methods=['POST'])
 def guardar():
     if request.method == 'POST':
-        Vnombre = request.form['txtnombre']
-        Vcontraseña = request.form['txtcontraseña']
-        
-        cs = mysql.connection.cursor()
-        cs.execute('INSERT INTO user (nombre, contraseña) VALUES (%s, %s)', (Vnombre, Vcontraseña))
-        mysql.connection.commit()
-        
-        flash('Inicio de sesión exitoso')
-        return redirect(url_for('Cliente.html'))
+        usuario = request.form['txtdepartamento']
+        contraseña = request.form['txtcontraseña']
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
+        usuario_encontrado = cur.fetchone()
+        cur.close()
+        if usuario_encontrado:
+            return redirect(url_for('cliente'))
+        else:
+            flash('Usuario o contraseña incorrectos', 'error')
+            return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 @app.route('/solicitud')
@@ -42,7 +55,7 @@ def consultas():
 
 @app.route('/cliente')
 def cliente():
-    return render_template('Cliente.html')
+    return render_template('cliente.html')
 
 
 if __name__ == '__main__':
