@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Tickets</title>
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <style>
+        /* Tu código CSS existente aquí... */
+
         body {
             background: url(../sources/FONDO.jpg) center/cover no-repeat fixed;
             text-align: center;
-            background-color: #333; /* Fondo oscuro */
-            color: #fff; /* Texto blanco */
+            background-color: #333;
+            color: #fff;
             margin: 50px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         h2 {
-            color: #A379F5; /* Color morado */
+            color: #A379F5;
         }
 
         form {
@@ -31,7 +33,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555; /* Texto gris oscuro */
+            color: #555;
         }
 
         input {
@@ -39,7 +41,7 @@
             padding: 10px;
             margin-bottom: 15px;
             box-sizing: border-box;
-            border: 1px solid #ccc; 
+            border: 1px solid #ccc;
             border-radius: 5px;
         }
 
@@ -60,14 +62,17 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
         }
 
-        table, th, td {
-            border: 1px solid #d582ff; 
+        table,
+        th,
+        td {
+            border: 1px solid #d582ff;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             text-align: center;
-            color: #333; 
+            color: #333;
         }
 
         th {
@@ -82,6 +87,7 @@
         .acciones button {
             margin-right: 10px;
         }
+
         .logo {
             display: flex;
             justify-content: space-between;
@@ -92,11 +98,9 @@
             width: 150px;
             margin-right: 10px;
         }
-
-
-
     </style>
 </head>
+
 <body>
     <!-- Logos -->
     <div class="logo">
@@ -104,12 +108,10 @@
         <img src="../sources/logo1.png" alt="Logo">
     </div>
 
-
     <h2>Consulta de Tickets</h2>
     <form action="consulta_tickets.php" method="post">
         <label for="numero_ticket">Número de Ticket:</label>
         <input type="text" id="buscar_ticket" placeholder="Buscar ticket" oninput="buscarTicket()">
-
         <button type="submit">Consultar Ticket</button>
     </form>
 
@@ -132,40 +134,23 @@
             <td>{{ solicitud.clasificacion }}</td>
             <td>{{ solicitud.fecha }}</td>
             <td>{{ solicitud.detalles }}</td>
-            <td>Pendiente</td> <!-- O el estatus que tengas en tu base de datos -->
+            <td>Pendiente</td>
         </tr>
         {% endfor %}
     </table>
-    
 
     <!-- Botones de Acciones -->
     <div class="acciones">
-        <button onclick="eliminarFila()">Eliminar</button>
+        <button onclick="confirmarEliminarFila()">Eliminar</button>
     </div>
 
     <script>
-        // Hacer una solicitud AJAX para obtener las solicitudes
-        fetch('/solicitudes')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data); // Imprimir los datos en la consola
-        data.forEach(solicitud => {
-            var table = document.querySelector('table');
-            var row = table.insertRow(-1);
-            ['id', 'nombre', 'tipo_soporte', 'fecha', 'clasificacion', 'detalles'].forEach(propiedad => {
-                var cell = row.insertCell(-1);
-                cell.textContent = solicitud[propiedad];
-            });
-            // Agregar el estatus (en este caso, 'Pendiente') como una celda adicional
-            var cellEstatus = row.insertCell(-1);
-            cellEstatus.textContent = 'Pendiente';
-        });
-    })
-    .catch(error => {
-        console.error('Error al obtener las solicitudes:', error);
-    });
-
-
+        function confirmarEliminarFila() {
+            var confirmacion = confirm("¿Estás seguro de que quieres eliminar la última fila?");
+            if (confirmacion) {
+                eliminarFila();
+            }
+        }
 
         function eliminarFila() {
             var table = document.querySelector('table');
@@ -184,23 +169,23 @@
             tabla = document.querySelector("table");
             filas = tabla.getElementsByTagName("tr");
 
-            // Iterar sobre todas las filas de la tabla
-            for (var i = 1; i < filas.length; i++) { // Empezamos desde 1 para omitir la fila de encabezados
+            for (var i = 1; i < filas.length; i++) {
                 celdas = filas[i].getElementsByTagName("td");
                 var mostrarFila = false;
-                // Iterar sobre todas las celdas de la fila
+
                 for (var j = 0; j < celdas.length; j++) {
                     texto = celdas[j].textContent.toUpperCase();
-                    // Si el texto de alguna celda coincide con el filtro, mostramos la fila
+
                     if (texto.indexOf(filtro) > -1) {
                         mostrarFila = true;
                         break;
                     }
                 }
-                // Mostrar u ocultar la fila según corresponda
+
                 filas[i].style.display = mostrarFila ? "" : "none";
             }
         }
     </script>
 </body>
+
 </html>
