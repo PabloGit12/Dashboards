@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,12 +11,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <style>
         body {
-            background: url(../sources/FONDO.jpg) center/cover no-repeat fixed;
+            background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
         }
 
         .logo {
+<<<<<<< HEAD
             max-width: 210px;
             margin-bottom: 20px;
+=======
+            max-width: 210px; 
+            margin-bottom: 20px; 
+>>>>>>> 4dde7e4eab4bd3fcda831afac28130ae22b77dc9
         }
 
         .container {
@@ -60,6 +64,21 @@
         $(function () {
             $("#inputFecha").datepicker();
         });
+
+        function validarFormulario() {
+            var nombre = document.getElementById("inputNombre").value;
+            var tipoSoporte = document.getElementById("inputSoporte").value;
+            var detalles = document.getElementById("inputDetalles").value;
+            var fecha = document.getElementById("inputFecha").value;
+            var clasificacion = document.getElementById("inputClasificacion").value;
+
+            if (nombre === "" || tipoSoporte === "" || detalles === "" || fecha === "" || clasificacion === "") {
+                alert("Por favor, complete todos los campos.");
+                return false;
+            }
+
+            return true;
+        }
     </script>
 </head>
 
@@ -107,5 +126,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
-
 </html>
