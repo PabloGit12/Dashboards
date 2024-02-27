@@ -15,13 +15,9 @@
         }
 
         .logo {
-<<<<<<< HEAD
-            max-width: 210px;
-            margin-bottom: 20px;
-=======
+
             max-width: 210px; 
             margin-bottom: 20px; 
->>>>>>> 4dde7e4eab4bd3fcda831afac28130ae22b77dc9
         }
 
         .container {
@@ -72,7 +68,7 @@
             var fecha = document.getElementById("inputFecha").value;
             var clasificacion = document.getElementById("inputClasificacion").value;
 
-            if (nombre === "" || tipoSoporte === "" || detalles === "" || fecha === "" || clasificacion === "") {
+            if (nombre === "" || tipoSoporte === "" || detalles === "" || fecha === "" || departamento === "") {
                 alert("Por favor, complete todos los campos.");
                 return false;
             }
@@ -94,6 +90,16 @@
                 <input type="text" name="nombre" class="form-control" id="inputNombre" placeholder="Escribe tu Nombre">
             </div>
             <div class="form-group col-md-6">
+                <label for="inputSoporte" class="form-label">Departamento</label>
+                <select name="tipo_soporte" class="form-control" id="inputSoporte">
+                    <option value="Fallas de office">Compras</option>
+                    <option value="Fallas en la red">Ventas</option>
+                    <option value="Errores de software">Logistica</option>
+                    <option value="Errores de Hardware">Contabilidad</option>
+                    <option value="Mantenimientos Preventivos">Produccion</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
                 <label for="inputSoporte" class="form-label">Tipo de soporte</label>
                 <select name="tipo_soporte" class="form-control" id="inputSoporte">
                     <option value="Fallas de office">Fallas de office</option>
@@ -110,10 +116,6 @@
             <div class="form-group col-12">
                 <label for="inputFecha" class="form-label">Fecha</label>
                 <input type="date" name="fecha" class="form-control" id="inputFecha" placeholder="Escribe la fecha">
-            </div>
-            <div class="form-group col-md-6">
-                <label for="inputClasificacion" class="form-label">Clasificación</label>
-                <input type="text" name="clasificacion" class="form-control" id="inputClasificacion" placeholder="Escribe la clasificacion">
             </div>
 
             <div class="form-group text-center col-md-12">

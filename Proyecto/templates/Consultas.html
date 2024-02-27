@@ -121,23 +121,24 @@
             <th>No. Ticket</th>
             <th>Nombre</th>
             <th>Departamento</th>
-            <th>Clasificación</th>
-            <th>Fecha</th>
+            <th>Tipo de Soporte</th>
             <th>Detalles</th>
+            <th>Fecha</th>
             <th>Estatus</th>
         </tr>
         {% for solicitud in solicitudes %}
         <tr>
             <td>{{ solicitud.id }}</td>
             <td>{{ solicitud.nombre }}</td>
+            <td>{{ solicitud.departamento }}</td>
             <td>{{ solicitud.tipo_soporte }}</td>
-            <td>{{ solicitud.clasificacion }}</td>
-            <td>{{ solicitud.fecha }}</td>
             <td>{{ solicitud.detalles }}</td>
+            <td>{{ solicitud.fecha }}</td>
             <td>Pendiente</td>
         </tr>
         {% endfor %}
     </table>
+    
 
     <!-- Botones de Acciones -->
     <div class="acciones">
@@ -145,6 +146,26 @@
     </div>
 
     <script>
+        fetch('/solicitudes')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Imprimir los datos en la consola
+        data.forEach(solicitud => {
+            var table = document.querySelector('table');
+            var row = table.insertRow(-1);
+            ['id', 'nombre', 'tipo_soporte', 'fecha', 'clasificacion', 'detalles'].forEach(propiedad => {
+                var cell = row.insertCell(-1);
+                cell.textContent = solicitud[propiedad];
+            });
+            // Agregar el estatus (en este caso, 'Pendiente') como una celda adicional
+            var cellEstatus = row.insertCell(-1);
+            cellEstatus.textContent = 'Pendiente';
+        });
+    })
+    .catch(error => {
+        console.error('Error al obtener las solicitudes:', error);
+    });
+
         function confirmarEliminarFila() {
             var confirmacion = confirm("¿Estás seguro de que quieres eliminar la última fila?");
             if (confirmacion) {

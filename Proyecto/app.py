@@ -30,22 +30,34 @@ def solicitud():
 def consultas():
     return render_template('Consultas.html')
 
-    
+@app.route('/jefe')
+def jefe():
+    return render_template('Jefe.html')
+
 @app.route('/guardar', methods=['POST'])
 def guardar():
     if request.method == 'POST':
         usuario = request.form['txtdepartamento']
         contraseña = request.form['txtcontraseña']
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
+        cur.execute("SELECT departamento, contraseña FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
         usuario_encontrado = cur.fetchone()
         cur.close()
         if usuario_encontrado:
-            return redirect(url_for('cliente'))
+            departamento_encontrado = usuario_encontrado[0]  # Obtener el departamento
+            contraseña_encontrada = usuario_encontrado[1]  # Obtener la contraseña
+
+            # Verificar el departamento y la contraseña del usuario encontrado
+            if departamento_encontrado == "jefe" and contraseña_encontrada == "jefe1234":
+                # Si es jefe, redirigir a la página de jefe
+                return redirect(url_for('jefe'))
+            else:
+                # Si no es jefe, redirigir a la página de cliente
+                return redirect(url_for('cliente'))
         else:
             flash('Usuario o contraseña incorrectos', 'error')
             return redirect(url_for('index'))
-        
+
 @app.route('/procesar_solicitud', methods=['POST'])
 def procesar_solicitud():
     if request.method == 'POST':
@@ -53,9 +65,9 @@ def procesar_solicitud():
         tipo_soporte = request.form['tipo_soporte']
         detalles = request.form['detalles']
         fecha = request.form['fecha']
-        clasificacion = request.form['clasificacion']
+        departamento = request.form['departamento']
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO solicitudes (nombre, tipo_soporte, detalles, fecha, clasificacion) VALUES (%s, %s, %s, %s, %s)", (nombre, tipo_soporte, detalles, fecha, clasificacion))
+        cur.execute("INSERT INTO solicitudes (nombre, tipo_soporte, detalles, fecha, departamento) VALUES (%s, %s, %s, %s, %s)", (nombre, tipo_soporte, detalles, fecha, departamento))
         mysql.connection.commit()
         cur.close()
         flash('Solicitud enviada correctamente')
@@ -86,7 +98,7 @@ def obtener_solicitudes():
             'nombre': solicitud[1],
             'tipo_soporte': solicitud[2],
             'fecha': solicitud[3],
-            'clasificacion': solicitud[4],
+            'departamento': solicitud[4],
             'detalles': solicitud[5]
         }
         solicitudes_formateadas.append(solicitud_formateada)
