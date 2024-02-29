@@ -50,7 +50,7 @@
 
 
 
-    <center><h1>CLIENTE</h1></center>
+    <center><h1>JEFE</h1></center>
 
     <!-- Buttons -->
     
@@ -67,9 +67,17 @@
                     <button type="submit" class="btn btn-outline-success btn-block">Consultar</button>
                 </form>
             </div>
+            <br>
+            <br>
             <div class="col-md-6">
                 <form action="" method="GET">
                     <button type="submit" class="btn btn-outline-success btn-block">Usuarios</button>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <form action="{{ url_for('consultas') }}" method="GET">
+                    <button type="submit" class="btn btn-outline-success btn-block">Departamentos</button>
                 </form>
             </div>
         </div>

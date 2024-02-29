@@ -105,5 +105,27 @@ def obtener_solicitudes():
 
     return jsonify(solicitudes_formateadas)
 
+@app.route('/departamentos', methods=['POST'])
+def derpartamento():
+    return render_template('departamentos.html')
+
+@app.route('/guardar_departamento', methods=['POST'])
+def guardar_departamento():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        responsable = request.form['responsable']
+        
+        # Aquí puedes realizar cualquier operación de guardado en la base de datos
+        # por ejemplo, guardar en una base de datos SQL, en MongoDB, etc.
+        
+        # Por ahora, simplemente imprimiremos los datos recibidos para propósitos de demostración
+        print("Nombre del departamento:", nombre)
+        print("Responsable:", responsable)
+        
+        # Aquí puedes redirigir a una página de confirmación o renderizar una plantilla específica
+        return '¡Departamento registrado con éxito!'
+    else:
+        return 'Error: método de solicitud no válido'
+
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
