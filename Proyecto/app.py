@@ -105,11 +105,11 @@ def obtener_solicitudes():
 
     return jsonify(solicitudes_formateadas)
 
-@app.route('/departamentos', methods=['POST'])
-def derpartamento():
-    return render_template('departamentos.html')
+@app.route('/departamentos')
+def derpartamentos():
+    return render_template('Departamentos.html')
 
-@app.route('/guardar_departamento', methods=['POST'])
+@app.route('/guardar_departamentos', methods=['POST'])
 def guardar_departamento():
     if request.method == 'POST':
         nombre = request.form['nombre']
@@ -126,6 +126,9 @@ def guardar_departamento():
         return '¡Departamento registrado con éxito!'
     else:
         return 'Error: método de solicitud no válido'
+
+
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

@@ -63,14 +63,20 @@
     </head>
 <body>
     <h1>Registro de Departamentos</h1>
-    <form action="/guardar_departamento" method="POST">
-        <label for="nombre">Nombre del Departamento:</label><br>
-        <input type="text" id="nombre" name="nombre" required><br><br>
-        
-        <label for="responsable">Responsable:</label><br>
-        <input type="text" id="responsable" name="responsable" required><br><br>
-        
-        <input type="submit" value="Registrar Departamento">
+    <form action="/departamento" method="POST" class="container">
+            <label for="nombre" class="form-label">Nombre del Departamento:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+    
+        <div class="mb-3">
+            <label for="responsable" class="form-label">Responsable:</label>
+            <input type="text" class="form-control" id="responsable" name="responsable" required>
+        </div>
+    
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Registrar Departamento</button>
+        </div>
     </form>
+    
 </body>
 </html>

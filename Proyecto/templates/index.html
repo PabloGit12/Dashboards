@@ -89,7 +89,10 @@
                     ¡Por favor, inicia sesión para acceder a tu cuenta!
                     <p></p>
             </div>
-            <button type="button" class="btn btn-secondary">Iniciar Sesión</button>
+            <form action="{{ url_for('cliente') }}" method="GET">
+                <button type="submit" class="btn btn-secondary">Iniciar Sesión</button>
+            </form>
+            
         </form>
     </div>
 </body>
