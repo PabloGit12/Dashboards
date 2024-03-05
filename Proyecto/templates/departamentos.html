@@ -1,82 +1,111 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
-        <title>Registo de Departamento</title>
-        <style>
-            body {
-                background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
-                color: white;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                margin: 0;
-            }
-    
-            .logo {
-                max-width: 210px; 
-                margin-bottom: 20px; 
-            }
-    
-            .container {
-                background-color: rgba(255, 255, 255, 0.8); 
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-                max-width: 400px;
-                width: 100%;
-            }
-    
-            h1 {
-                color: #800080; 
-                text-align: center;
-                font-weight: bold;
-                font-size: 2em; 
-                font-family: 'QuickSand', sans-serif;
-            }
-    
-            form {
-                margin-top: 20px;
-            }
-    
-            label {
-                color: #3d2e3e;
-            }
-    
-            button {
-                width: 100%;
-                background-color: #343a40; 
-                color: white;
-                border: 1px solid #771752; 
-            }
-    
-            button:hover {
-                background-color: #6f42c1; 
-            }
-        </style>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <title>Registo de Departamento</title>
+    <style>
+        body {
+            background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .logo {
+            max-width: 210px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #800080;
+            text-align: center;
+            font-weight: bold;
+            font-size: 2em;
+            font-family: 'QuickSand', sans-serif;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            color: #3d2e3e;
+        }
+
+        button {
+            width: 100%;
+            background-color: #343a40;
+            color: white;
+            border: 1px solid #771752;
+        }
+
+        button:hover {
+            background-color: #6f42c1;
+        }
+    </style>
+</head>
 <body>
-    <h1>Registro de Departamentos</h1>
-    <form action="/departamento" method="POST" class="container">
-            <label for="nombre" class="form-label">Nombre del Departamento:</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
-        </div>
-    
-        <div class="mb-3">
-            <label for="responsable" class="form-label">Responsable:</label>
-            <input type="text" class="form-control" id="responsable" name="responsable" required>
-        </div>
-    
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Registrar Departamento</button>
-        </div>
-    </form>
-    
+<h1>Registro de Departamentos</h1>
+<form action="/guardar_departamentos" method="POST" class="container">
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre del Departamento:</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="responsable" class="form-label">Responsable:</label>
+        <input type="text" class="form-control" id="responsable" name="responsable" required>
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Registrar Departamento</button>
+    </div>
+</form>
+
+<!-- Tabla de registros -->
+<div class="container mt-5">
+    <h2>Registros de Departamentos</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre del Departamento</th>
+            <th>Responsable</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for departamento in departamentos %}
+        <tr>
+            <td>{{ departamento.id }}</td>
+            <td>{{ departamento.nombre }}</td>
+            <td>{{ departamento.responsable }}</td>
+            <td>
+                <a href="{{ url_for('editar_departamento', id=departamento.id) }}" class="btn btn-info btn-sm">Editar</a>
+                <a href="{{ url_for('eliminar_departamento', id=departamento.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

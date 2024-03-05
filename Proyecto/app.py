@@ -104,10 +104,10 @@ def obtener_solicitudes():
         solicitudes_formateadas.append(solicitud_formateada)
 
     return jsonify(solicitudes_formateadas)
-
 @app.route('/departamentos')
-def derpartamentos():
+def departamentos():
     return render_template('Departamentos.html')
+
 
 @app.route('/guardar_departamentos', methods=['POST'])
 def guardar_departamento():
@@ -126,6 +126,11 @@ def guardar_departamento():
         return '¡Departamento registrado con éxito!'
     else:
         return 'Error: método de solicitud no válido'
+    
+
+@app.route('/reportes')
+def reportes():
+    return render_template('Reportes.html')
 
 
 
