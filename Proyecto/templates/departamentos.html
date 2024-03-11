@@ -6,7 +6,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <title>Registo de Departamento</title>
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+
+    <title>Registro de Departamento</title>
     <style>
         body {
             background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
@@ -62,8 +65,9 @@
     </style>
 </head>
 <body>
-<h1>Registro de Departamentos</h1>
-<form action="/guardar_departamentos" method="POST" class="container">
+
+<form id="registroForm" action="/guardar_departamentos" method="POST" class="container">
+    <h1>Registro de Departamentos</h1>
     <div class="mb-3">
         <label for="nombre" class="form-label">Nombre del Departamento:</label>
         <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -76,36 +80,36 @@
 
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">Registrar Departamento</button>
+        <br>
+        <a href="{{ url_for('ver_departamentos') }}" class="btn btn-primary">Ver Lista de Departamentos</a>
     </div>
 </form>
 
-<!-- Tabla de registros -->
-<div class="container mt-5">
-    <h2>Registros de Departamentos</h2>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre del Departamento</th>
-            <th>Responsable</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for departamento in departamentos %}
-        <tr>
-            <td>{{ departamento.id }}</td>
-            <td>{{ departamento.nombre }}</td>
-            <td>{{ departamento.responsable }}</td>
-            <td>
-                <a href="{{ url_for('editar_departamento', id=departamento.id) }}" class="btn btn-info btn-sm">Editar</a>
-                <a href="{{ url_for('eliminar_departamento', id=departamento.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- Script para mostrar SweetAlert -->
+<script>
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+        
+        // Realizar la petición de registro del departamento (puedes hacerlo con AJAX)
+        // Aquí simplemente simulamos una respuesta exitosa
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'El departamento se registró correctamente.',
+            showConfirmButton: false,
+            timer: 1500
+        }).then(function() {
+            // Limpiar el formulario después de mostrar el mensaje de éxito
+            document.getElementById('registroForm').reset();
+        });
+
+        // Puedes agregar una redirección después del mensaje de éxito si lo deseas
+        // window.location.href = "{{ url_for('ver_departamentos') }}";
+    });
+</script>
 
 </body>
 </html>

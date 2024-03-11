@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
+from xhtml2pdf import pisa
+from io import BytesIO
+
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
@@ -12,10 +15,11 @@ mysql = MySQL(app)
 
 
 @app.route('/')
-def index():
+def index(): 
     curSelect = mysql.connection.cursor()
     curSelect.execute('SELECT * FROM user')
     consulta = curSelect.fetchall()
+    flash('Bienvenido')
     return render_template('index.html', consulta=consulta)
 
 @app.route('/cliente')
@@ -24,7 +28,7 @@ def cliente():
 
 @app.route('/solicitud')
 def solicitud():
-    return render_template('solicitud.html')
+    return render_template('Solicitud.html')
 
 @app.route('/consultas')
 def consultas():
@@ -62,16 +66,17 @@ def guardar():
 def procesar_solicitud():
     if request.method == 'POST':
         nombre = request.form['nombre']
+        departamento = request.form['departamento']
         tipo_soporte = request.form['tipo_soporte']
         detalles = request.form['detalles']
         fecha = request.form['fecha']
-        departamento = request.form['departamento']
+        
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO solicitudes (nombre, tipo_soporte, detalles, fecha, departamento) VALUES (%s, %s, %s, %s, %s)", (nombre, tipo_soporte, detalles, fecha, departamento))
+        cur.execute("INSERT INTO solicitudes (nombre, departamento, tipo_soporte, detalles, fecha ) VALUES (%s, %s, %s, %s, %s)", (nombre, departamento, tipo_soporte, detalles, fecha ))
         mysql.connection.commit()
         cur.close()
         flash('Solicitud enviada correctamente')
-        return redirect(url_for('consultas'))
+        return redirect(url_for('consultas'))  # Redirigir a la ruta 'consultas' después de procesar la solicitud
     
 @app.route('/consulta_tickets', methods=['GET'])
 def consulta_tickets():
@@ -96,43 +101,161 @@ def obtener_solicitudes():
         solicitud_formateada = {
             'id': solicitud[0],
             'nombre': solicitud[1],
-            'tipo_soporte': solicitud[2],
-            'fecha': solicitud[3],
-            'departamento': solicitud[4],
-            'detalles': solicitud[5]
+            'departamento': solicitud[2],
+            'tipo_soporte': solicitud[3],
+            'detalles': solicitud[4],
+            'fecha': solicitud[5]
+            
+            
         }
         solicitudes_formateadas.append(solicitud_formateada)
 
     return jsonify(solicitudes_formateadas)
+
 @app.route('/departamentos')
 def departamentos():
     return render_template('Departamentos.html')
 
 
 @app.route('/guardar_departamentos', methods=['POST'])
-def guardar_departamento():
+def guardar_departamentos():
     if request.method == 'POST':
         nombre = request.form['nombre']
         responsable = request.form['responsable']
-        
-        # Aquí puedes realizar cualquier operación de guardado en la base de datos
-        # por ejemplo, guardar en una base de datos SQL, en MongoDB, etc.
-        
-        # Por ahora, simplemente imprimiremos los datos recibidos para propósitos de demostración
-        print("Nombre del departamento:", nombre)
-        print("Responsable:", responsable)
-        
-        # Aquí puedes redirigir a una página de confirmación o renderizar una plantilla específica
-        return '¡Departamento registrado con éxito!'
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO departamentos (nombre, responsable) VALUES (%s, %s)", (nombre, responsable))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('departamentos'))
+
+@app.route('/editar_departamento/<int:id>', methods=['GET', 'POST'])
+def editar_departamento(id):
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        responsable = request.form['responsable']
+        cur.execute("UPDATE departamentos SET nombre=%s, responsable=%s WHERE id=%s", (nombre, responsable, id))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('departamentos'))
     else:
-        return 'Error: método de solicitud no válido'
+        cur.execute("SELECT * FROM departamentos WHERE id = %s", [id])
+        departamento = cur.fetchone()
+        cur.close()
+        return render_template('editar_departamento.html', departamento=departamento)
+
+def obtener_departamentos_desde_bd():
+    # Aquí podrías conectarte a tu base de datos y obtener los departamentos
+    # Por ahora, simplemente retornaremos una lista de diccionarios como ejemplo
+    return [
+        {'id': 1, 'nombre': 'Departamento 1', 'responsable': 'Responsable 1'},
+        {'id': 2, 'nombre': 'Departamento 2', 'responsable': 'Responsable 2'},
+        {'id': 3, 'nombre': 'Departamento 3', 'responsable': 'Responsable 3'}
+    ]
     
+@app.route('/ver_departamentos')
+def ver_departamentos():
+    # Aquí obtienes los departamentos registrados desde tu base de datos
+    departamentos = departamentos()  # Implementa esta función según tu lógica
+    return render_template('Ver_departamentos.html', departamentos=departamentos)
+
+@app.route('/eliminar_departamento/<int:id>')
+def eliminar_departamento(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM departamentos WHERE id = %s", [id])
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('index'))
 
 @app.route('/reportes')
 def reportes():
     return render_template('Reportes.html')
 
 
+
+@app.route('/guardar_reporte', methods=['POST'])
+def guardar_reporte():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        departamento = request.form['txtdepartamento']
+        fecha = request.form['fecha']
+        descripcion = request.form['descripcion']
+
+        # Insertar datos en la tabla "reportes"
+        cur = mysql.connection.cursor()
+        query = "INSERT INTO reportes (nombre, departamento, fecha, descripcion) VALUES (%s, %s, %s, %s)"
+        values = (nombre, departamento, fecha, descripcion)
+        cur.execute(query, values)
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Reporte generado y guardado correctamente.')
+
+    return redirect(url_for('reportes'))
+
+@app.route('/ver_reportes')
+def ver_reportes():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM reportes ORDER BY departamento")
+    reportes = cur.fetchall()
+    cur.close()
+    return render_template('ver_reportes.html', reportes=reportes)
+
+@app.route('/descargar_reporte_pdf')
+def descargar_reporte_pdf():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM reportes ORDER BY departamento")
+    reportes = cur.fetchall()
+    cur.close()
+
+    rendered = render_template('ver_reportes.html', reportes=reportes)
+    pdf = render_pdf(rendered)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=reportes.pdf'
+
+    return response
+
+def render_pdf(html):
+    pdf = BytesIO()
+    pisa.CreatePDF(BytesIO(html.encode('utf-8')), pdf)
+    return pdf.getvalue()
+
+
+@app.route('/crear_usuarios')
+def crear_usuarios():
+    return render_template('crear_usuario.html')
+
+@app.route('/usuarios')
+def usuarios():
+    return render_template('Usuarios.html')
+
+@app.route('/crear_usuario', methods=['POST'])
+def crear_usuario():
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        nombre = request.form['nombre']
+        email = request.form['email']
+        
+        # Insertar el nuevo usuario en la base de datos
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO usuarios (nombre, email) VALUES (%s, %s)", (nombre, email))
+        mysql.connection.commit()
+        cur.close()
+        
+        # Redirigir a la página de lista de usuarios después de crear el usuario
+        return redirect(url_for('usuarios'))
+
+@app.route('/editar_usuario/<int:id>')
+def editar_usuario(id):
+    # Aquí implementarías la lógica para editar un usuario en la base de datos
+    return f'Editar usuario con ID {id}'
+
+@app.route('/eliminar_usuario/<int:id>')
+def eliminar_usuario(id):
+    # Aquí implementarías la lógica para eliminar un usuario de la base de datos
+    return f'Eliminar usuario con ID {id}'
 
 
 if __name__ == '__main__':

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Cabecera -->
+</head>
+<body>
+    <h1>Editar Departamento</h1>
+    <form action="{{ url_for('editar_departamento', id=departamento.id) }}" method="POST">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre del Departamento:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ departamento.nombre }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="responsable" class="form-label">Responsable:</label>
+            <input type="text" class="form-control" id="responsable" name="responsable" value="{{ departamento.responsable }}">
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+    </form>
+</body>
+</html>

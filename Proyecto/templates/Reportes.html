@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Agregar SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <title>Reportes</title>
 </head>
 <body>
@@ -33,7 +35,7 @@
             width: 100%;
         }
 
-        h1 {
+        h2 {
             color: #800080; 
             text-align: center;
             font-weight: bold;
@@ -60,16 +62,22 @@
             background-color: #6f42c1; 
         }
     </style>
-     <div class="container">
+    <div class="container">
         <h2 class="mt-5">Datos del Reporte</h2>
-        <form action="/guardar_reporte" method="POST">
+        <form action="/guardar_reporte" method="POST" id="reporteForm">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" required>
             </div>
             <div class="mb-3">
-                <label for="departamento" class="form-label">Departamento:</label>
-                <input type="text" class="form-control" id="departamento" name="departamento" required>
+                <label for="txtdepartamento" class="form-label">Departamento:</label>
+                <select class="form-select" id="txtdepartamento" name="txtdepartamento">
+                    <option value="compras">Compras</option>
+                    <option value="contabilidad">Contabilidad</option>
+                    <option value="logistica">Logística</option>
+                    <option value="produccion">Producción</option>
+                    <option value="ventas">Ventas</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="fecha" class="form-label">Fecha:</label>
@@ -80,10 +88,70 @@
                 <textarea class="form-control" id="descripcion" name="descripcion" rows="4" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Reporte</button>
+            <br>
+            <br>
+            <center><a href="{{ url_for('ver_reportes') }}" class="btn btn-primary">Ver reportes</a></center>
         </form>
     </div>
 
-    <!-- Agregar enlaces a Bootstrap JS (opcional si necesitas funcionalidades de Bootstrap JS) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Agregar SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Función para mostrar SweetAlert cuando se genera el reporte exitosamente
+        function mostrarMensaje() {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Reporte generado!',
+                text: 'El reporte se ha generado exitosamente.',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                // Limpiar el formulario después de mostrar la alerta
+                document.getElementById('reporteForm').reset();
+            });
+        }
+
+        // Capturar el evento submit del formulario
+        document.getElementById('reporteForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe normalmente
+            
+            // Enviar el formulario de manera asíncrona
+            fetch('/guardar_reporte', {
+                method: 'POST',
+                body: new FormData(event.target)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Si la respuesta es exitosa, mostrar el mensaje
+                    mostrarMensaje();
+                } else {
+                    // Si hay un error, mostrar un mensaje de error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un error al generar el reporte. Por favor, inténtalo de nuevo.',
+                        showConfirmButton: true
+                    });
+                }
+            })
+            .catch(error => {
+                // Si hay un error de red, mostrar un mensaje de error
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al conectar con el servidor. Por favor, inténtalo de nuevo más tarde.',
+                    showConfirmButton: true
+                });
+            });
+        });
+
+        // Capturar el evento click del botón "Ver reporte"
+        document.getElementById('verReporte').addEventListener('click', function() {
+            // Aquí puedes agregar la lógica para ver el reporte
+            // Por ejemplo, redirigir a otra página que muestre el historial de reportes
+            // window.location.href = '/ruta_para_ver_reporte';
+        });
+    </script>
 </body>
 </html>

@@ -56,49 +56,50 @@
             border-color: #000000;
         }
     </style>
-    <script>
+     <script>
+        // Función para inicializar el datepicker
         $(function () {
             $("#inputFecha").datepicker();
         });
 
+        // Función para validar el formulario antes de enviarlo
         function validarFormulario() {
             var nombre = document.getElementById("inputNombre").value;
+            var departamento = document.getElementById("inputDepartamento").value;
             var tipoSoporte = document.getElementById("inputSoporte").value;
             var detalles = document.getElementById("inputDetalles").value;
             var fecha = document.getElementById("inputFecha").value;
-            var clasificacion = document.getElementById("inputClasificacion").value;
 
-            if (nombre === "" || tipoSoporte === "" || detalles === "" || fecha === "" || departamento === "") {
+            // Verificar que todos los campos estén completos
+            if (nombre === "" || departamento === "" || tipoSoporte === "" || detalles === "" || fecha === "") {
                 alert("Por favor, complete todos los campos.");
-                return false;
+                return false; // Evitar el envío del formulario si falta algún campo
             }
 
-            return true;
+            return true; // Permitir el envío del formulario si todos los campos están completos
         }
     </script>
 </head>
-
 <body class="bg-light">
-
-    <img src="../sources/logo3.png" alt="Logo" class="logo">
-
+    <!-- Contenido del formulario -->
     <div class="container mt-5">
         <h1 class="text-center">"SOLICITUD DE TICKET"</h1>
-        <form class="mt-3" method="POST" action="{{ url_for('procesar_solicitud') }}">
+        <form class="mt-3" method="POST" action="{{ url_for('procesar_solicitud') }}" onsubmit="return validarFormulario()">
             <div class="form-group col-md-6">
                 <label for="inputNombre" class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" id="inputNombre" placeholder="Escribe tu Nombre">
             </div>
             <div class="form-group col-md-6">
-                <label for="inputSoporte" class="form-label">Departamento</label>
-                <select name="tipo_soporte" class="form-control" id="inputSoporte">
-                    <option value="Fallas de office">Compras</option>
-                    <option value="Fallas en la red">Ventas</option>
-                    <option value="Errores de software">Logistica</option>
-                    <option value="Errores de Hardware">Contabilidad</option>
-                    <option value="Mantenimientos Preventivos">Produccion</option>
+                <label for="inputDepartamento" class="form-label">Departamento</label>
+                <select name="departamento" class="form-control" id="inputDepartamento">
+                    <option value="compras">Compras</option>
+                    <option value="contabilidad">Contabilidad</option>
+                    <option value="logistica">Logística</option>
+                    <option value="produccion">Producción</option>
+                    <option value="ventas">Ventas</option>
+                    <option value="jefe">Jefe</option>
                 </select>
-            </div>
+            </div>            
             <div class="form-group col-md-6">
                 <label for="inputSoporte" class="form-label">Tipo de soporte</label>
                 <select name="tipo_soporte" class="form-control" id="inputSoporte">
@@ -119,7 +120,7 @@
             </div>
 
             <div class="form-group text-center col-md-12">
-                <button type="submit" class="btn btn-primary">Solicitar</button>
+                <button type="submit" class="btn btn-primary" formaction="{{ url_for('consultas') }}">Solicitar</button>
             </div>
         </form>
     </div>

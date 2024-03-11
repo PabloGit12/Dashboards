@@ -57,7 +57,7 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form action="" method="GET">
+                <form action="{{ url_for('reportes') }}" method="GET">
                     <button type="submit" class="btn btn-outline-info btn-block">Reportes</button>
                 </form>
             </div>
@@ -70,7 +70,7 @@
             <br>
             <br>
             <div class="col-md-6">
-                <form action="" method="GET">
+                <form action="{{ url_for('crear_usuario') }}" method="POST">
                     <button type="submit" class="btn btn-outline-success btn-block">Usuarios</button>
                 </form>
             </div>

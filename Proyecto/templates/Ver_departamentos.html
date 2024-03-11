@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        body {
+            background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .logo {
+            max-width: 210px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #800080;
+            text-align: center;
+            font-weight: bold;
+            font-size: 2em;
+            font-family: 'QuickSand', sans-serif;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            color: #3d2e3e;
+        }
+
+        button {
+            width: 100%;
+            background-color: #343a40;
+            color: white;
+            border: 1px solid #771752;
+        }
+
+        button:hover {
+            background-color: #6f42c1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Departamentos</h1>
+
+    <!-- Tabla de registros -->
+    <div class="container mt-5">
+        <h2>Registros de Departamentos</h2>
+        <table class="table table-striped">
+            <!-- Cabecera de la tabla -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Departamento</th>
+                    <th>Responsable</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <!-- Cuerpo de la tabla -->
+            <tbody>
+                {% for departamento in departamentos %}
+                <tr>
+                    <td>{{ departamento.id }}</td>
+                    <td>{{ departamento.nombre }}</td>
+                    <td>{{ departamento.responsable }}</td>
+                    <td>
+                        <a href="{{ url_for('editar_departamento', id=departamento.id) }}" class="btn btn-info btn-sm">Editar</a>
+                        <a href="{{ url_for('eliminar_departamento', id=departamento.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container mt-3">
+        <a href="{{ url_for('registro_departamento') }}" class="btn btn-primary">Registrar Nuevo Departamento</a>
+    </div>
+</body>
+</html>
