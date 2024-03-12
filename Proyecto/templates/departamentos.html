@@ -81,7 +81,7 @@
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">Registrar Departamento</button>
         <br>
-        <a href="{{ url_for('ver_departamentos') }}" class="btn btn-primary">Ver Lista de Departamentos</a>
+        <a href="{{ url_for('seeDepartamentos') }} " class="btn btn-primary">Ver Lista de Departamentos</a>
     </div>
 </form>
 
@@ -90,26 +90,49 @@
 
 <!-- Script para mostrar SweetAlert -->
 <script>
-    document.getElementById('registroForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Evitar el envío del formulario por defecto
-        
-        // Realizar la petición de registro del departamento (puedes hacerlo con AJAX)
-        // Aquí simplemente simulamos una respuesta exitosa
-        Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: 'El departamento se registró correctamente.',
-            showConfirmButton: false,
-            timer: 1500
-        }).then(function() {
-            // Limpiar el formulario después de mostrar el mensaje de éxito
-            document.getElementById('registroForm').reset();
-        });
+    document.getElementById('reporteForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe normalmente
 
-        // Puedes agregar una redirección después del mensaje de éxito si lo deseas
-        // window.location.href = "{{ url_for('ver_departamentos') }}";
+        // Obtener los datos del formulario
+        const formData = new FormData(event.target);
+
+        // Enviar los datos del formulario de manera asíncrona
+        fetch('/guardar_reporte', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Si la respuesta es exitosa, mostrar un mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: 'Reporte generado y guardado correctamente.',
+                    showConfirmButton: true
+                });
+            } else {
+                // Si hay un error, mostrar un mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al generar el reporte o al guardar los datos. Por favor, inténtalo de nuevo.',
+                    showConfirmButton: true
+                });
+            }
+        })
+        .catch(error => {
+            // Si hay un error, mostrar un mensaje de error
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al conectar con el servidor o al enviar los datos. Por favor, inténtalo de nuevo más tarde.',
+                showConfirmButton: true
+            });
+        });
     });
 </script>
+
 
 </body>
 </html>

@@ -153,11 +153,10 @@ def obtener_departamentos_desde_bd():
         {'id': 3, 'nombre': 'Departamento 3', 'responsable': 'Responsable 3'}
     ]
     
-@app.route('/ver_departamentos')
-def ver_departamentos():
-    # Aquí obtienes los departamentos registrados desde tu base de datos
-    departamentos = departamentos()  # Implementa esta función según tu lógica
-    return render_template('Ver_departamentos.html', departamentos=departamentos)
+@app.route('/seeDepartamentos')
+def seeDepartamentos():
+    return render_template('seeDepartamentos.html')
+
 
 @app.route('/eliminar_departamento/<int:id>')
 def eliminar_departamento(id):
