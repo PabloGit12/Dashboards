@@ -97,61 +97,46 @@
     <!-- Agregar SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Función para mostrar SweetAlert cuando se genera el reporte exitosamente
-        function mostrarMensaje() {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Reporte generado!',
-                text: 'El reporte se ha generado exitosamente.',
-                showConfirmButton: false,
-                timer: 2000
-            }).then(() => {
-                // Limpiar el formulario después de mostrar la alerta
-                document.getElementById('reporteForm').reset();
-            });
-        }
-
         // Capturar el evento submit del formulario
         document.getElementById('reporteForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Evitar que el formulario se envíe normalmente
-            
-            // Enviar el formulario de manera asíncrona
-            fetch('/guardar_reporte', {
-                method: 'POST',
-                body: new FormData(event.target)
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Si la respuesta es exitosa, mostrar el mensaje
-                    mostrarMensaje();
-                } else {
-                    // Si hay un error, mostrar un mensaje de error
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un error al generar el reporte. Por favor, inténtalo de nuevo.',
-                        showConfirmButton: true
-                    });
-                }
-            })
-            .catch(error => {
-                // Si hay un error de red, mostrar un mensaje de error
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo un error al conectar con el servidor. Por favor, inténtalo de nuevo más tarde.',
-                    showConfirmButton: true
-                });
-            });
-        });
+    event.preventDefault(); // Evitar que el formulario se envíe normalmente
 
-        // Capturar el evento click del botón "Ver reporte"
-        document.getElementById('verReporte').addEventListener('click', function() {
-            // Aquí puedes agregar la lógica para ver el reporte
-            // Por ejemplo, redirigir a otra página que muestre el historial de reportes
-            // window.location.href = '/ruta_para_ver_reporte';
+    // Enviar el formulario de manera asíncrona
+    fetch('/generar_pdf', {
+        method: 'POST',
+        body: new FormData(event.target)
+    })
+    .then(response => {
+        if (response.ok) {
+            // Si la respuesta es exitosa, convertir la respuesta a PDF y abrirlo en una nueva ventana
+            return response.blob().then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'reporte.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            });
+        } else {
+            // Si hay un error, mostrar un mensaje de error
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un error al generar el reporte. Por favor, inténtalo de nuevo.',
+                showConfirmButton: true
+            });
+        }
+    })
+    .catch(error => {
+        // Si hay un error de red, mostrar un mensaje de error
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al conectar con el servidor. Por favor, inténtalo de nuevo más tarde.',
+            showConfirmButton: true
         });
-    </script>
-</body>
-</html>
+    });
+});
+</script>

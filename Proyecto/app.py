@@ -171,8 +171,6 @@ def eliminar_departamento(id):
 def reportes():
     return render_template('Reportes.html')
 
-
-
 @app.route('/guardar_reporte', methods=['POST'])
 def guardar_reporte():
     if request.method == 'POST':
