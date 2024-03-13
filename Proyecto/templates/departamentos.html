@@ -90,14 +90,14 @@
 
 <!-- Script para mostrar SweetAlert -->
 <script>
-    document.getElementById('reporteForm').addEventListener('submit', function(event) {
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Evitar que el formulario se envíe normalmente
 
         // Obtener los datos del formulario
         const formData = new FormData(event.target);
 
         // Enviar los datos del formulario de manera asíncrona
-        fetch('/guardar_reporte', {
+        fetch('/guardar_departamentos', {
             method: 'POST',
             body: formData
         })
@@ -107,15 +107,18 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
-                    text: 'Reporte generado y guardado correctamente.',
+                    text: 'Departamento registrado correctamente.',
                     showConfirmButton: true
+                }).then(() => {
+                    // Limpiar el formulario después de mostrar el mensaje de éxito
+                    document.getElementById('registroForm').reset();
                 });
             } else {
                 // Si hay un error, mostrar un mensaje de error
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Hubo un error al generar el reporte o al guardar los datos. Por favor, inténtalo de nuevo.',
+                    text: 'Hubo un error al registrar el departamento. Por favor, inténtalo de nuevo.',
                     showConfirmButton: true
                 });
             }

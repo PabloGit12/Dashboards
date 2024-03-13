@@ -157,6 +157,16 @@ def obtener_departamentos_desde_bd():
 def seeDepartamentos():
     return render_template('seeDepartamentos.html')
 
+@app.route('/seedepartamentos')
+def seesdepartamentos():
+    # 1. Obtener los datos de los departamentos desde la base de datos
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM departamentos")
+    departamentos = cur.fetchall()
+    cur.close()
+
+    # 2. Pasar los datos de los departamentos a la plantilla 'Departamentos.html'
+    return render_template('seesDepartamentos.html', departamentos=departamentos)
 
 @app.route('/eliminar_departamento/<int:id>')
 def eliminar_departamento(id):
@@ -178,17 +188,20 @@ def guardar_reporte():
         fecha = request.form['fecha']
         descripcion = request.form['descripcion']
 
-        # Insertar datos en la tabla "reportes"
-        cur = mysql.connection.cursor()
-        query = "INSERT INTO reportes (nombre, departamento, fecha, descripcion) VALUES (%s, %s, %s, %s)"
-        values = (nombre, departamento, fecha, descripcion)
-        cur.execute(query, values)
-        mysql.connection.commit()
-        cur.close()
+        try:
+            cur = mysql.connection.cursor()
+            query = "INSERT INTO reportes (nombre, departamento, fecha, descripcion) VALUES (%s, %s, %s, %s)"
+            values = (nombre, departamento, fecha, descripcion)
+            cur.execute(query, values)
+            mysql.connection.commit()
+            cur.close()
 
-        flash('Reporte generado y guardado correctamente.')
+            flash('Reporte generado y guardado correctamente.')
+        except Exception as e:
+            flash(f'Error al guardar el reporte: {str(e)}', 'error')
 
     return redirect(url_for('reportes'))
+
 
 @app.route('/ver_reportes')
 def ver_reportes():
@@ -220,39 +233,13 @@ def render_pdf(html):
     return pdf.getvalue()
 
 
-@app.route('/crear_usuarios')
-def crear_usuarios():
-    return render_template('crear_usuario.html')
+@app.route('/ver_usuarios')
+def ver_usuarios():
+    return render_template('ver_usuario.html')
 
 @app.route('/usuarios')
 def usuarios():
     return render_template('Usuarios.html')
-
-@app.route('/crear_usuario', methods=['POST'])
-def crear_usuario():
-    if request.method == 'POST':
-        # Obtener los datos del formulario
-        nombre = request.form['nombre']
-        email = request.form['email']
-        
-        # Insertar el nuevo usuario en la base de datos
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO usuarios (nombre, email) VALUES (%s, %s)", (nombre, email))
-        mysql.connection.commit()
-        cur.close()
-        
-        # Redirigir a la página de lista de usuarios después de crear el usuario
-        return redirect(url_for('usuarios'))
-
-@app.route('/editar_usuario/<int:id>')
-def editar_usuario(id):
-    # Aquí implementarías la lógica para editar un usuario en la base de datos
-    return f'Editar usuario con ID {id}'
-
-@app.route('/eliminar_usuario/<int:id>')
-def eliminar_usuario(id):
-    # Aquí implementarías la lógica para eliminar un usuario de la base de datos
-    return f'Eliminar usuario con ID {id}'
 
 
 if __name__ == '__main__':
