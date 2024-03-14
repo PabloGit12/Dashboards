@@ -117,6 +117,7 @@
 
     <!-- Tabla de Resultados -->
     <table>
+        
         <tr>
             <th>No. Ticket</th>
             <th>Nombre</th>
@@ -125,9 +126,10 @@
             <th>Detalles</th>
             <th>Fecha</th>
             <th>Estatus</th>
+            <th>Acciones</th>
         </tr>
         {% for solicitud in solicitudes %}
-        <tr>
+        <tr id="fila_{{ solicitud.id }}">
             <td>{{ solicitud.id }}</td>
             <td>{{ solicitud.nombre }}</td>
             <td>{{ solicitud.departamento }}</td>
@@ -135,16 +137,14 @@
             <td>{{ solicitud.detalles }}</td>
             <td>{{ solicitud.fecha }}</td>
             <td>Pendiente</td>
+            <td>
+                <form action="/eliminar_ticket/{{ solicitud.id }}" method="POST">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
-    
-
-    <!-- Botones de Acciones -->
-    <div class="acciones">
-        <button onclick="confirmarEliminarFila()">Eliminar</button>
-    </div>
-
     <script>
         fetch('/solicitudes')
     .then(response => response.json())
@@ -166,21 +166,70 @@
         console.error('Error al obtener las solicitudes:', error);
     });
 
-        function confirmarEliminarFila() {
-            var confirmacion = confirm("¿Estás seguro de que quieres eliminar la última fila?");
-            if (confirmacion) {
-                eliminarFila();
-            }
+
+    window.onload = function () {
+            fetch('/solicitudes')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Imprimir los datos en la consola
+                    data.forEach(solicitud => {
+                        agregarFilaTabla(solicitud);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al obtener las solicitudes:', error);
+                });
+        };
+
+        function agregarFilaTabla(solicitud) {
+            var tabla = document.getElementById('tabla-solicitudes');
+            var fila = tabla.insertRow();
+
+            // Insertar las celdas con los datos de la solicitud
+            var celdas = [
+                solicitud.id,
+                solicitud.nombre,
+                solicitud.departamento,
+                solicitud.tipo_soporte,
+                solicitud.detalles,
+                solicitud.fecha,
+                'Pendiente',
+                `<button onclick="eliminarRegistro(${solicitud.id})">Eliminar</button>`
+            ];
+
+            celdas.forEach(valor => {
+                var celda = fila.insertCell();
+                celda.textContent = valor;
+            });
         }
 
-        function eliminarFila() {
-            var table = document.querySelector('table');
-            var rowCount = table.rows.length;
-            if (rowCount > 1) {
-                table.deleteRow(rowCount - 1);
-            } else {
-                alert("No hay filas para eliminar.");
-            }
+        function eliminarRegistro(id) {
+            // Enviar una solicitud para eliminar el registro con el ID proporcionado
+            fetch('/eliminar_registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Eliminar la fila de la tabla si la eliminación en el servidor fue exitosa
+                    var fila = document.querySelector(`#tabla-solicitudes tr[data-id="${id}"]`);
+                    if (fila) {
+                        fila.remove();
+                    } else {
+                        console.error('No se encontró la fila con el ID:', id);
+                    }
+                } else {
+                    console.error('Error al eliminar el registro:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error al eliminar el registro:', error);
+            });
         }
 
         function buscarTicket() {

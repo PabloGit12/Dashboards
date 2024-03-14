@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Agregar SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <title>Reportes</title>
 </head>
 <body>
@@ -64,7 +62,7 @@
     </style>
     <div class="container">
         <h2 class="mt-5">Datos del Reporte</h2>
-        <form action="/guardar_reporte" method="POST" id="reporteForm">
+        <form action="{{ url_for('guardar_reporte') }}" method="POST" id="reporteForm">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -89,55 +87,59 @@
             </div>
             <button type="submit" class="btn btn-primary">Guardar Reporte</button>
             <br>
-            <br>
-            <center><a href="{{ url_for('ver_reportes') }}" class="btn btn-primary">Ver reportes</a></center>
+            <br>>
+            <center><a href="{{ url_for('ver_reportes') }}" class="btn btn-primary">Ver reportes</a></center
         </form>
     </div>
 
-    <!-- Agregar SweetAlert JS -->
-    <!-- Agregar SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script>
-        // Capturar el evento submit del formulario
-        document.getElementById('reporteForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Evitar que el formulario se envíe normalmente
 
-    // Enviar el formulario de manera asíncrona
-    fetch('/generar_pdf', {
-        method: 'POST',
-        body: new FormData(event.target)
-    })
-    .then(response => {
-        if (response.ok) {
-            // Si la respuesta es exitosa, convertir la respuesta a PDF y abrirlo en una nueva ventana
-            return response.blob().then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'reporte.pdf';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            });
-        } else {
+<!-- Script para mostrar SweetAlert -->
+<script>
+    document.getElementById('registroForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe normalmente
+
+        // Obtener los datos del formulario
+        const formData = new FormData(event.target);
+
+        // Enviar los datos del formulario de manera asíncrona
+        fetch('/guardar_reporte', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Si la respuesta es exitosa, mostrar un mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: 'Reporte guardado correctamente.',
+                    showConfirmButton: true
+                }).then(() => {
+                    // Limpiar el formulario después de mostrar el mensaje de éxito
+                    document.getElementById('registroForm').reset();
+                });
+            } else {
+                // Si hay un error, mostrar un mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un error al registrar el departamento. Por favor, inténtalo de nuevo.',
+                    showConfirmButton: true
+                });
+            }
+        })
+        .catch(error => {
             // Si hay un error, mostrar un mensaje de error
+            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Hubo un error al generar el reporte. Por favor, inténtalo de nuevo.',
+                text: 'Hubo un error al conectar con el servidor o al enviar los datos. Por favor, inténtalo de nuevo más tarde.',
                 showConfirmButton: true
             });
-        }
-    })
-    .catch(error => {
-        // Si hay un error de red, mostrar un mensaje de error
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Hubo un error al conectar con el servidor. Por favor, inténtalo de nuevo más tarde.',
-            showConfirmButton: true
         });
     });
-});
 </script>
+</body>
+</html>

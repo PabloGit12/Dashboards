@@ -63,7 +63,7 @@
                     <td>{{ reporte[4] }}</td>
                     <td>
                         <!-- Botón de descarga de PDF -->
-                        <a href="{{ url_for('descargar_reporte_pdf') }}" class="btn btn-primary">Descargar PDF</a>
+                        <a href="{{ url_for('descargar_reporte_pdf', id=reporte[1]) }}" class="btn btn-primary">Descargar PDF</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -84,7 +84,8 @@
         <form id="login-form" method="POST" action="/guardar">
             <div class="mb-3">
                 <label for="txtdepartamento" class="form-label">Departamento:</label>
-                <select class="form-select" id="txtdepartamento" name="txtdepartamento">
+                <select class="form-select" id="txtdepartamento" name="txtdepartamento" required>
+                    <option value="">Selecciona un departamento</option>
                     <option value="compras">Compras</option>
                     <option value="contabilidad">Contabilidad</option>
                     <option value="logistica">Logística</option>
@@ -92,47 +93,70 @@
                     <option value="ventas">Ventas</option>
                     <option value="jefe">Jefe</option>
                 </select>
+                <div id="departamento-error" class="error"></div> <!-- Error message for department -->
             </div>
             <div class="mb-3">
                 <label for="txtcontraseña" class="form-label">Contraseña:</label>
-                <input type="password" class="form-control" id="txtcontraseña" name="txtcontraseña">
+                <input type="password" class="form-control" id="txtcontraseña" name="txtcontraseña" required>
+                <div id="password-error" class="error"></div> <!-- Error message for password -->
             </div>
             <button type="submit" class="btn btn-secondary">Iniciar Sesión</button>
         </form>
     </div>
     <!-- SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    
+
     <script>
         document.getElementById('login-form').addEventListener('submit', function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe normalmente
+            
+            // Validar los campos antes de enviar el formulario
             var departamento = document.getElementById('txtdepartamento').value;
-            var urlRedireccion = '';
-    
-            // Verificar el valor seleccionado en el campo de departamento
-            switch (departamento) {
-                case 'jefe':
-                    urlRedireccion = '/jefe';
-                    break;
-                default:
-                    urlRedireccion = '/cliente';
-                    break;
+            var contraseña = document.getElementById('txtcontraseña').value;
+            var valid = true;
+
+            if (!departamento) {
+                valid = false;
+                document.getElementById('departamento-error').textContent = 'Por favor, selecciona un departamento.';
+            } else {
+                document.getElementById('departamento-error').textContent = '';
             }
-    
-            // Mostrar SweetAlert
-            Swal.fire({
-                icon: 'success',
-                title: '¡Bienvenido!',
-                text: 'Has iniciado sesión correctamente.',
-                showConfirmButton: false,
-                timer: 1500 // Duración en milisegundos
-            }).then(() => {
-                // Redireccionar a la vista correspondiente
-                window.location.href = urlRedireccion;
-            });
+
+            if (!contraseña) {
+                valid = false;
+                document.getElementById('password-error').textContent = 'Por favor, ingresa tu contraseña.';
+            } else {
+                document.getElementById('password-error').textContent = '';
+            }
+
+            // Si todos los campos son válidos, enviar el formulario
+            if (valid) {
+                var urlRedireccion = '';
+
+                // Determinar la URL de redireccionamiento según el departamento seleccionado
+                switch (departamento) {
+                    case 'jefe':
+                        urlRedireccion = '/jefe';
+                        break;
+                    default:
+                        urlRedireccion = '/cliente';
+                        break;
+                }
+
+                // Mostrar SweetAlert de bienvenida
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Bienvenido!',
+                    text: 'Has iniciado sesión correctamente.',
+                    showConfirmButton: false,
+                    timer: 1500 // Duración en milisegundos
+                }).then(() => {
+                    // Redireccionar a la vista correspondiente
+                    window.location.href = urlRedireccion;
+                });
+            }
         });
     </script>
-    
 </body>
 
 </html>

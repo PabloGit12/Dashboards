@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
-from xhtml2pdf import pisa
-from io import BytesIO
+from flask import send_file
+
 
 
 app = Flask(__name__)
@@ -43,10 +43,12 @@ def guardar():
     if request.method == 'POST':
         usuario = request.form['txtdepartamento']
         contraseña = request.form['txtcontraseña']
+
         cur = mysql.connection.cursor()
-        cur.execute("SELECT departamento, contraseña FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
+        cur.execute("SELECT * FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
         usuario_encontrado = cur.fetchone()
         cur.close()
+
         if usuario_encontrado:
             departamento_encontrado = usuario_encontrado[0]  # Obtener el departamento
             contraseña_encontrada = usuario_encontrado[1]  # Obtener la contraseña
@@ -56,7 +58,7 @@ def guardar():
                 # Si es jefe, redirigir a la página de jefe
                 return redirect(url_for('jefe'))
             else:
-                # Si no es jefe, redirigir a la página de cliente
+              # Si no es jefe, redirigir a la página de cliente
                 return redirect(url_for('cliente'))
         else:
             flash('Usuario o contraseña incorrectos', 'error')
@@ -85,6 +87,17 @@ def consulta_tickets():
     solicitudes = cur.fetchall()
     cur.close()
     return render_template('consultas.html', solicitudes=solicitudes)
+
+@app.route('/eliminar_ticket/<id>', methods=['POST'])
+def eliminar_ticket(id):
+    if request.method == 'POST':
+        curEli = mysql.connection.cursor()
+        curEli.execute('DELETE FROM tickets WHERE id=%s', (id,))
+        mysql.connection.commit()
+        flash('El ticket ha sido eliminado correctamente.')
+    return redirect(url_for('consulta'))
+
+
 
 from flask import jsonify
 
@@ -144,14 +157,6 @@ def editar_departamento(id):
         cur.close()
         return render_template('editar_departamento.html', departamento=departamento)
 
-def obtener_departamentos_desde_bd():
-    # Aquí podrías conectarte a tu base de datos y obtener los departamentos
-    # Por ahora, simplemente retornaremos una lista de diccionarios como ejemplo
-    return [
-        {'id': 1, 'nombre': 'Departamento 1', 'responsable': 'Responsable 1'},
-        {'id': 2, 'nombre': 'Departamento 2', 'responsable': 'Responsable 2'},
-        {'id': 3, 'nombre': 'Departamento 3', 'responsable': 'Responsable 3'}
-    ]
     
 @app.route('/seeDepartamentos')
 def seeDepartamentos():
@@ -164,9 +169,11 @@ def seesdepartamentos():
     cur.execute("SELECT * FROM departamentos")
     departamentos = cur.fetchall()
     cur.close()
-
-    # 2. Pasar los datos de los departamentos a la plantilla 'Departamentos.html'
+    
+    # 2. Pasar los datos de los departamentos a la plantilla 'seesDepartamentos.html'
     return render_template('seesDepartamentos.html', departamentos=departamentos)
+
+
 
 @app.route('/eliminar_departamento/<int:id>')
 def eliminar_departamento(id):
@@ -179,6 +186,7 @@ def eliminar_departamento(id):
 @app.route('/reportes')
 def reportes():
     return render_template('Reportes.html')
+
 
 @app.route('/guardar_reporte', methods=['POST'])
 def guardar_reporte():
@@ -202,7 +210,6 @@ def guardar_reporte():
 
     return redirect(url_for('reportes'))
 
-
 @app.route('/ver_reportes')
 def ver_reportes():
     cur = mysql.connection.cursor()
@@ -211,35 +218,135 @@ def ver_reportes():
     cur.close()
     return render_template('ver_reportes.html', reportes=reportes)
 
-@app.route('/descargar_reporte_pdf')
-def descargar_reporte_pdf():
+
+
+@app.route('/descargar_reporte_pdf/<id>')
+def descargar_reporte_pdf(id):
+    # Aquí recuperarías los datos del reporte usando el ID proporcionado
+    # Supongamos que tienes una función para obtener los datos del reporte desde la base de datos
+    reporte = obtener_reporte_desde_bd(id)
+
+    # Verificar si se encontró el reporte con el ID proporcionado
+    if reporte:
+        # Recuperar los datos del reporte
+        nombre = reporte['nombre']
+        departamento = reporte['departamento']
+        fecha = reporte['fecha']
+        descripcion = reporte['descripcion']
+
+        # Crear el PDF utilizando ReportLab
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        c.drawString(100, 750, f"Nombre: {nombre}")
+        c.drawString(100, 730, f"Departamento: {departamento}")
+        c.drawString(100, 710, f"Fecha: {fecha}")
+        c.drawString(100, 690, f"Descripción: {descripcion}")
+        c.save()
+
+        # Devolver el PDF generado como una respuesta para descargar
+        buffer.seek(0)
+        return send_file(buffer, as_attachment=True, attachment_filename='reporte.pdf', mimetype='application/pdf')
+    else:
+        # Si no se encuentra el reporte, devolver un mensaje de error o redirigir a una página de error
+        return 'Reporte no encontrado', 404
+    
+
+    
+def obtener_reporte_desde_bd(id):
+    # Aquí implementa la lógica para recuperar los datos del reporte desde la base de datos
+    # Puedes utilizar Flask-MySQL para realizar consultas a la base de datos y recuperar los datos del reporte
+    # Por ejemplo, si estás utilizando Flask-MySQL, podrías hacer algo como esto:
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM reportes ORDER BY departamento")
-    reportes = cur.fetchall()
+    cur.execute("SELECT * FROM reportes WHERE id = %s", [id])
+    reporte = cur.fetchone()
+    cur.close()
+    
+    # Verificar si se encontró el reporte con el ID proporcionado
+    if reporte:
+        # Devuelve un diccionario con los datos del reporte
+        return {
+            'nombre': reporte[1],
+            'departamento': reporte[2],
+            'fecha': reporte[3],
+            'descripcion': reporte[4]
+        }
+    else:
+        # Si no se encuentra el reporte, devuelve None
+        return None
+
+
+@app.route('/ver_usuario', methods=['POST'])
+def ver_usuario():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO usuarios (nombre, email) VALUES (%s, %s)", (nombre, email))
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Usuario creado correctamente')
+        return redirect(url_for('usuarios'))
+    else:
+        return render_template('error.html', message='Método no permitido')
+
+
+
+
+@app.route('/usuarios', methods=['GET', 'POST'])
+def usuarios():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios")
+    usuarios = cur.fetchall()
+    cur.close()
+    return render_template('usuarios.html', usuarios=usuarios)
+
+@app.route('/crear_usuario', methods=['POST'])
+def crear_usuario():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO usuarios (nombre, email) VALUES (%s, %s)", (nombre, email))
+        mysql.connection.commit()
+        cur.close()
+
+        flash('Usuario creado correctamente')
+        return redirect(url_for('usuarios'))
+    else:
+        return render_template('error.html', message='Método no permitido')
+
+@app.route('/usuarios', methods=['GET'])
+def mostrar_usuarios():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios")
+    usuarios = cur.fetchall()
+    cur.close()
+    return render_template('usuarios.html', usuarios=usuarios)
+
+@app.route('/ver_usuarios', methods=['GET'])
+def ver_usuarios():
+    # Aquí realizas la lógica para obtener los usuarios desde tu base de datos
+    # Por ejemplo, podrías llamar a una función que obtenga los usuarios desde la base de datos
+    usuarios = obtener_usuarios_desde_bd()
+
+    # Luego renderizas la plantilla 'usuarios.html' y pasas los usuarios como contexto
+    return render_template('usuarios.html', usuarios=usuarios)
+
+def obtener_usuarios_desde_bd():
+    # Aquí implementa la lógica para recuperar los usuarios desde la base de datos
+    # Por ejemplo, podrías usar Flask-MySQL para realizar una consulta a la base de datos
+    # y recuperar los usuarios
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios")
+    usuarios = cur.fetchall()
     cur.close()
 
-    rendered = render_template('ver_reportes.html', reportes=reportes)
-    pdf = render_pdf(rendered)
+    # Devuelve la lista de usuarios
+    return usuarios
 
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=reportes.pdf'
-
-    return response
-
-def render_pdf(html):
-    pdf = BytesIO()
-    pisa.CreatePDF(BytesIO(html.encode('utf-8')), pdf)
-    return pdf.getvalue()
-
-
-@app.route('/ver_usuarios')
-def ver_usuarios():
-    return render_template('ver_usuario.html')
-
-@app.route('/usuarios')
-def usuarios():
-    return render_template('Usuarios.html')
 
 
 if __name__ == '__main__':

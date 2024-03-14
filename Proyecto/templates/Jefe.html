@@ -69,11 +69,12 @@
             </div>
             <br>
             <br>
-            <div class="col-md-6">
-                <form action="{{ url_for('usuarios') }}" method="POST">
-                    <button type="submit" class="btn btn-outline-success btn-block">Usuarios</button>
-                </form>
-            </div>
+                <div class="col-md-6">
+                    <form id="usuariosForm" action="{{ url_for('usuarios') }}" method="POST" style="display: none;">
+                        <!-- Agrega cualquier campo adicional necesario para tu solicitud POST -->
+                    </form>
+                    <a href="#" onclick="document.getElementById('usuariosForm').submit();" class="btn btn-outline-success btn-block">Usuarios</a>
+                </div>
 
             <div class="col-md-6">
                 <form action="{{ url_for('departamentos') }}" method="GET">
