@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 from flask import send_file
+from reportlab.pdfgen import canvas
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
 
 
 
@@ -275,21 +278,14 @@ def obtener_reporte_desde_bd(id):
         return None
 
 
-@app.route('/ver_usuario', methods=['POST'])
+@app.route('/ver_usuario')
 def ver_usuario():
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios")
+    usuarios = cur.fetchall()
+    cur.close()
+    return render_template('ver_usuario.html', usuarios=usuarios)
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO usuarios (nombre, email) VALUES (%s, %s)", (nombre, email))
-        mysql.connection.commit()
-        cur.close()
-
-        flash('Usuario creado correctamente')
-        return redirect(url_for('usuarios'))
-    else:
-        return render_template('error.html', message='Método no permitido')
 
 
 
@@ -325,28 +321,6 @@ def mostrar_usuarios():
     usuarios = cur.fetchall()
     cur.close()
     return render_template('usuarios.html', usuarios=usuarios)
-
-@app.route('/ver_usuarios', methods=['GET'])
-def ver_usuarios():
-    # Aquí realizas la lógica para obtener los usuarios desde tu base de datos
-    # Por ejemplo, podrías llamar a una función que obtenga los usuarios desde la base de datos
-    usuarios = obtener_usuarios_desde_bd()
-
-    # Luego renderizas la plantilla 'usuarios.html' y pasas los usuarios como contexto
-    return render_template('usuarios.html', usuarios=usuarios)
-
-def obtener_usuarios_desde_bd():
-    # Aquí implementa la lógica para recuperar los usuarios desde la base de datos
-    # Por ejemplo, podrías usar Flask-MySQL para realizar una consulta a la base de datos
-    # y recuperar los usuarios
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM usuarios")
-    usuarios = cur.fetchall()
-    cur.close()
-
-    # Devuelve la lista de usuarios
-    return usuarios
-
 
 
 if __name__ == '__main__':

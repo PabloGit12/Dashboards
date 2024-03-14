@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+        h1 {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>REPORTE</h1>
+    {% for reporte in reportes %}
+        <p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
+        <p><strong>Departamento:</strong> {{ reporte.departamento }}</p>
+        <p><strong>Fecha:</strong> {{ reporte.fecha }}</p>
+        <p><strong>Descripción:</strong> {{ reporte.descripcion }}</p>
+    {% endfor %}
+    
+</body>
+</html>

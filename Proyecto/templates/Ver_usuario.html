@@ -56,18 +56,19 @@
           </tr>
         </thead>
         <tbody>
-          {% for usuario in usuarios %}
+          {% for usuarios in usuarios %}
           <tr>
-            <td>{{ usuario.id }}</td>
-            <td>{{ usuario.nombre }}</td>
-            <td>{{ usuario.email }}</td>
+            <td>{{ usuarios.id }}</td>
+            <td>{{ usuarios.nombre }}</td>
+            <td>{{ usuarios.email }}</td>
             <td>
-              <a href="{{ url_for('editar_usuario', id=usuario.id) }}" class="btn btn-primary btn-sm">Editar</a>
-              <a href="{{ url_for('eliminar_usuario', id=usuario.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+              <a class="btn btn-primary btn-sm">Editar</a>
+              <a class="btn btn-danger btn-sm">Eliminar</a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
+        
       </table>
   </div>
 </body>
