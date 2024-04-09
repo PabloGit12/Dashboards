@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola Auxiliar</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(../sources/FONDO.jpg) center/cover no-repeat fixed;
+            text-align: center;
+            background-color: #333; /* Fondo oscuro */
+            color: #fff; /* Texto blanco */
+            margin: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            color: #A379F5; /* Morado más visible */
+            font-family: 'QuickSand', sans-serif;
+            font-weight: bold;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .btn-outline-info, .btn-outline-success {
+            color: #000000;
+            background-color: #F5EED2; 
+            font-family: 'Arial', sans-serif; 
+        }
+
+        .btn-outline-info:hover, .btn-outline-success:hover {
+            background-color: #fff;
+            color: #9b82ff; 
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Logo grande -->
+<img src="../static/logo3.png" alt="logo3" style="width: 350px; height: 200px;">
+
+<p> </p>
+
+
+
+    <center><h1>Auxiliar</h1></center>
+
+    <!-- Buttons -->
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form action="" method="GET">
+                    <button type="submit" class="btn btn-outline-info btn-block">Perfil Auxiliar</button>
+                </form>
+            </div>
+            
+            <div class="col-md-6">
+                <form action="" method="GET">
+                    <button type="submit" class="btn btn-outline-success btn-block">Control tickets</button>
+                </form>
+            </div>
+            <br>
+            <br>
+                <div class="col-md-6">
+                    <form id="usuariosForm" action="{{ url_for('usuarios') }}" method="POST" style="display: none;">
+                        <!-- Agrega cualquier campo adicional necesario para tu solicitud POST -->
+                    </form>
+                    <a href="#" onclick="document.getElementById('usuariosForm').submit();" class="btn btn-outline-success btn-block">Usuarios</a>
+                </div>
+
+            <div class="col-md-6">
+                <form action="" method="GET">
+                    <button type="submit" class="btn btn-outline-success btn-block">Consultar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional, for some functionalities) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

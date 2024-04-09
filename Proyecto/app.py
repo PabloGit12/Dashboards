@@ -41,6 +41,10 @@ def consultas():
 def jefe():
     return render_template('Jefe.html')
 
+@app.route('/auxiliar')
+def auxiliar():
+    return render_template('Auxiliar.html')
+
 @app.route('/guardar', methods=['POST'])
 def guardar():
     if request.method == 'POST':
@@ -285,9 +289,6 @@ def ver_usuario():
     usuarios = cur.fetchall()
     cur.close()
     return render_template('ver_usuario.html', usuarios=usuarios)
-
-
-
 
 
 @app.route('/usuarios', methods=['GET', 'POST'])
