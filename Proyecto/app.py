@@ -45,6 +45,10 @@ def jefe():
 def auxiliar():
     return render_template('Auxiliar.html')
 
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt(app)
+
 @app.route('/guardar', methods=['POST'])
 def guardar():
     if request.method == 'POST':
@@ -52,27 +56,29 @@ def guardar():
         contraseña = request.form['txtcontraseña']
 
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM user WHERE departamento = %s AND contraseña = %s", (usuario, contraseña))
+        cur.execute("SELECT contraseña FROM user WHERE departamento = %s", (usuario,))
         usuario_encontrado = cur.fetchone()
         cur.close()
 
         if usuario_encontrado:
-            departamento_encontrado = usuario_encontrado[0]  # Obtener el departamento
-            contraseña_encontrada = usuario_encontrado[1]  # Obtener la contraseña
+            contraseña_encontrada = usuario_encontrado[0]  # Obtener la contraseña almacenada en la base de datos
 
-            # Verificar el departamento y la contraseña del usuario encontrado
-            if departamento_encontrado == "jefe" and contraseña_encontrada == "jefe1234":
-                # Si es jefe, redirigir a la página de jefe
-                return redirect(url_for('jefe'))
-            if departamento_encontrado == "auxiliar" and contraseña_encontrada == "aux1234":
-                # Si es auxiliar, redirigir a la página de jefe
-                return redirect(url_for('auxiliar'))
+            # Verificar si la contraseña ingresada coincide con la contraseña almacenada
+            if bcrypt.check_password_hash(contraseña_encontrada, contraseña):
+                # Contraseña correcta, redirigir al usuario
+                if usuario == "jefe":
+                    return redirect(url_for('jefe'))
+                elif usuario == "auxiliar":
+                    return redirect(url_for('auxiliar'))
+                else:
+                    return redirect(url_for('cliente'))
             else:
-              # Si no es jefe, redirigir a la página de cliente
-                return redirect(url_for('cliente'))
+                flash('Usuario o contraseña incorrectos', 'error')
+                return redirect(url_for('index'))
         else:
             flash('Usuario o contraseña incorrectos', 'error')
             return redirect(url_for('index'))
+
 
 @app.route('/procesar_solicitud', methods=['POST'])
 def procesar_solicitud():
@@ -470,7 +476,40 @@ def mensaje():
 
     return render_template('Mensaje.html')
 
+@app.route('/mensajesjefe')
+def mensajesjefe():
+    cur = mysql.connection.cursor()
 
+    # Obtener los mensajes recibidos del jefe
+    cur.execute("SELECT id, mensaje, responsable FROM mensajes WHERE dirigido = 'Jefe'")
+    mensajes_recibidos = cur.fetchall()
 
+    # Obtener los mensajes enviados por el auxiliar
+    cur.execute("SELECT id, mensaje, responsable, dirigido FROM mensajes WHERE responsable = 'Jefe'")
+    mensajes_enviados = cur.fetchall()
+
+    cur.close()
+
+    return render_template('MensajesJefe.html', mensajes_recibidos=mensajes_recibidos, mensajes_enviados=mensajes_enviados)
+
+@app.route('/mensajejefesend', methods=['GET', 'POST'])
+def mensajejefesend():
+    if request.method == 'POST':
+        mensaje_texto = request.form['mensaje']
+        dirigido_a = request.form['dirigido']
+        de = request.form['de']
+
+        # Aquí puedes guardar el mensaje en la base de datos
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("INSERT INTO mensajes (mensaje, responsable, dirigido) VALUES (%s, %s, %s)", (mensaje_texto, de, dirigido_a))
+            mysql.connection.commit()
+            cursor.close()
+            return redirect(url_for('auxiliar'))  # Redirige a la página principal después de guardar el mensaje
+        except Exception as e:
+            print("Error al guardar el mensaje:", e)
+            # Maneja el error apropiadamente, por ejemplo, mostrar un mensaje de error al usuario
+
+    return render_template('EnviarMensaje.html')
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
