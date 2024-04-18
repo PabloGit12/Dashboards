@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
+        }
+
+        .logo {
+            max-width: 210px; 
+            margin-bottom: 20px; 
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #800080;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .form-control {
+            border: 1px solid #000000;
+        }
+
+        .btn-primary {
+            background-color: #816577;
+            border-color: #816577;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #000000;
+            border-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Crear Mensaje</h1>
+        <!-- Agregar un div para mostrar la alerta -->
+        <div id="alerta-mensaje" class="alert" style="display: none;"></div>
+        <form id="formulario-mensaje" action="{{ url_for('mensaje') }}" method="post">
+            <div class="mb-3">
+                <label for="dirigido" class="form-label">De a</label>
+                <input type="text" value="auxiliar" class="form-control" id="de" name="de" required>
+            </div>
+            <div class="mb-3">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="mensaje" name="mensaje" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="dirigido" class="form-label">Dirigido a</label>
+                <input type="text" class="form-control" id="dirigido" name="dirigido" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+        </form>
+        <a href="{{ url_for('comentarios_mensajes') }}" class="btn btn-secondary mt-3">Regresar al Menú Principal</a>
+    </div>
+    <!-- Agregar el script para mostrar la alerta -->
+    <script>
+        $(document).ready(function() {
+            $("#formulario-mensaje").submit(function(e) {
+                e.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
+
+                // Enviar el formulario mediante AJAX
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Mostrar una alerta de éxito si el mensaje se envió correctamente
+                        $("#alerta-mensaje").removeClass("alert-danger").addClass("alert-success").text("Mensaje enviado correctamente").show();
+                        // Limpiar el formulario
+                        $("#formulario-mensaje")[0].reset();
+                    },
+                    error: function(xhr, status, error) {
+                        // Mostrar una alerta de error si ocurrió algún problema al enviar el mensaje
+                        $("#alerta-mensaje").removeClass("alert-success").addClass("alert-danger").text("Error al enviar el mensaje").show();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

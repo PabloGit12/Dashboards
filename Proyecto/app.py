@@ -433,6 +433,42 @@ def control_tickets():
 
     return render_template('ControlTickets.html', solicitudes=solicitudes)
 
+@app.route('/comentarios_mensajes')
+def comentarios_mensajes():
+    cur = mysql.connection.cursor()
+
+    # Obtener los mensajes recibidos del jefe
+    cur.execute("SELECT id, mensaje, responsable FROM mensajes WHERE dirigido = 'auxiliar'")
+    mensajes_recibidos = cur.fetchall()
+
+    # Obtener los mensajes enviados por el auxiliar
+    cur.execute("SELECT id, mensaje, responsable, dirigido FROM mensajes WHERE responsable = 'auxiliar'")
+    mensajes_enviados = cur.fetchall()
+
+    cur.close()
+
+    return render_template('ComentariosMensajes.html', mensajes_recibidos=mensajes_recibidos, mensajes_enviados=mensajes_enviados)
+from flask import request
+
+@app.route('/mensaje', methods=['GET', 'POST'])
+def mensaje():
+    if request.method == 'POST':
+        mensaje_texto = request.form['mensaje']
+        dirigido_a = request.form['dirigido']
+        de = request.form['de']
+
+        # Aquí puedes guardar el mensaje en la base de datos
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("INSERT INTO mensajes (mensaje, responsable, dirigido) VALUES (%s, %s, %s)", (mensaje_texto, de, dirigido_a))
+            mysql.connection.commit()
+            cursor.close()
+            return redirect(url_for('auxiliar'))  # Redirige a la página principal después de guardar el mensaje
+        except Exception as e:
+            print("Error al guardar el mensaje:", e)
+            # Maneja el error apropiadamente, por ejemplo, mostrar un mensaje de error al usuario
+
+    return render_template('Mensaje.html')
 
 
 
