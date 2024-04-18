@@ -77,21 +77,28 @@
                 </tr>
             </thead>
             <!-- Cuerpo de la tabla -->
-            <tbody>
-                {% for departamento in departamentos %}
-                <tr>
-                    <td>{{ departamento.id }}</td>
-                    <td>{{ departamento.nombre }}</td>
-                    <td>{{ departamento.responsable }}</td>
-                    <td>
-                        <!-- Enlaces para editar y eliminar -->
-                        <a href="#" class="btn btn-info btn-sm">Editar</a>
-                        <a href="#" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+           <!-- Cuerpo de la tabla -->
+<!-- Cuerpo de la tabla -->
+<tbody>
+    {% for departamento in departamentos %}
+    <tr>
+        <td>{{ departamento[0] }}</td> <!-- ID -->
+        <td>{{ departamento[1] }}</td> <!-- Nombre del Departamento -->
+        <td>{{ departamento[2] }}</td> <!-- Responsable -->
+        <td>
+            <a href="{{ url_for('editarDepartamento', id=departamento[0]) }}" class="btn btn-info btn-sm">Editar</a>
+            <a href="{{ url_for('eliminarDepartamento', id=departamento[0]) }}" class="btn btn-danger btn-sm">Eliminar</a>
+        </td>
+        
+    </tr>
+    {% endfor %}
+</tbody>
+
+
         </table>
     </div>
+    <a href="{{ url_for('departamentos')}}" class="btn btn-secondary mt-3">Regresar a Menu Departamentos</a>
+
 </body>
+
 </html>

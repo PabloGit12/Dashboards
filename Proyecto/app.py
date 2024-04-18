@@ -1,16 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 from flask import send_file
-from reportlab.pdfgen import canvas
+# from reportlab.pdfgen import canvas
 from io import BytesIO
-from reportlab.lib.pagesizes import letter
+# from reportlab.lib.pagesizes import letter
 
 
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'dbticket'
 app.secret_key = 'mysecretkey'
 
@@ -148,47 +148,106 @@ def guardar_departamentos():
         cur.close()
         return redirect(url_for('departamentos'))
 
-@app.route('/editar_departamento/<int:id>', methods=['GET', 'POST'])
-def editar_departamento(id):
+@app.route('/editarDepartamento/<int:id>', methods=['GET', 'POST'])
+def editarDepartamento(id):
     cur = mysql.connection.cursor()
+
     if request.method == 'POST':
+        # Obtener los datos del formulario de edición
         nombre = request.form['nombre']
         responsable = request.form['responsable']
-        cur.execute("UPDATE departamentos SET nombre=%s, responsable=%s WHERE id=%s", (nombre, responsable, id))
+        
+        # Actualizar el departamento en la base de datos
+        cur.execute("UPDATE departamentos SET nombre = %s, responsable = %s WHERE id = %s", (nombre, responsable, id))
         mysql.connection.commit()
+        
+        flash('Departamento actualizado correctamente', 'success')
         cur.close()
-        return redirect(url_for('departamentos'))
-    else:
-        cur.execute("SELECT * FROM departamentos WHERE id = %s", [id])
-        departamento = cur.fetchone()
+        return redirect('/seeDepartamentos')
+
+    # Obtener los datos del departamento a editar
+    cur.execute("SELECT * FROM departamentos WHERE id = %s", (id,))
+    departamento = cur.fetchone()
+    cur.close()
+    return render_template('editarDepartamento.html', departamento=departamento)
+
+@app.route('/editarUsuario/<int:id>', methods=['GET', 'POST'])
+def editarUsuario(id):
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario de edición
+        nombre = request.form['nombre']
+        email = request.form['email']
+        
+        # Actualizar el departamento en la base de datos
+        cur.execute("UPDATE Usuarios SET nombre = %s, email = %s WHERE id = %s", (nombre, email, id))
+        mysql.connection.commit()
+        
+        flash('Usuario actualizado correctamente', 'success')
         cur.close()
-        return render_template('editar_departamento.html', departamento=departamento)
+        return redirect('/ver_usuario')
+
+    # Obtener los datos del departamento a editar
+    cur.execute("SELECT * FROM Usuarios WHERE id = %s", (id,))
+    usuarios = cur.fetchone()
+    cur.close()
+    return render_template('editarUsuario.html', usuarios=usuarios)
+
+
 
     
-@app.route('/seeDepartamentos')
+@app.route('/seeDepartamentos', methods=['GET'])
 def seeDepartamentos():
-    return render_template('seeDepartamentos.html')
-
-@app.route('/seedepartamentos')
-def seesdepartamentos():
-    # 1. Obtener los datos de los departamentos desde la base de datos
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM departamentos")
     departamentos = cur.fetchall()
     cur.close()
-    
-    # 2. Pasar los datos de los departamentos a la plantilla 'seesDepartamentos.html'
-    return render_template('seesDepartamentos.html', departamentos=departamentos)
+    print(departamentos)  # Añade esta línea para imprimir los resultados
+    return render_template('seeDepartamentos.html', departamentos=departamentos)
 
-
-
-@app.route('/eliminar_departamento/<int:id>')
-def eliminar_departamento(id):
+@app.route('/eliminarDepartamento/<int:id>', methods=['GET', 'POST'])
+def eliminarDepartamento(id):
+    # Conexión a la base de datos y cursor
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM departamentos WHERE id = %s", [id])
-    mysql.connection.commit()
-    cur.close()
-    return redirect(url_for('index'))
+    
+    try:
+        # Ejecutar la consulta SQL para eliminar el departamento con el ID dado
+        cur.execute("DELETE FROM departamentos WHERE id = %s", (id,))
+        # Confirmar la eliminación
+        mysql.connection.commit()
+    except Exception as e:
+        # Si ocurre algún error, deshacer la operación y manejar el error
+        mysql.connection.rollback()
+        print("Error al eliminar el departamento:", e)
+    finally:
+        # Cerrar el cursor
+        cur.close()
+    
+    # Redirigir a la página 'seeDepartamentos' después de eliminar el departamento
+    return redirect(url_for('seeDepartamentos'))
+@app.route('/eliminarUsuario/<int:id>', methods=['GET', 'POST'])
+def eliminarUsuario(id):
+    # Conexión a la base de datos y cursor
+    cur = mysql.connection.cursor()
+    
+    try:
+        # Ejecutar la consulta SQL para eliminar el departamento con el ID dado
+        cur.execute("DELETE FROM Usuarios WHERE id = %s", (id,))
+        # Confirmar la eliminación
+        mysql.connection.commit()
+    except Exception as e:
+        # Si ocurre algún error, deshacer la operación y manejar el error
+        mysql.connection.rollback()
+        print("Error al eliminar el Usuarios:", e)
+    finally:
+        # Cerrar el cursor
+        cur.close()
+    
+    # Redirigir a la página 'seeDepartamentos' después de eliminar el departamento
+    return redirect(url_for('ver_usuario'))
+
+
 
 @app.route('/reportes')
 def reportes():
@@ -282,7 +341,7 @@ def obtener_reporte_desde_bd(id):
         return None
 
 
-@app.route('/ver_usuario')
+@app.route('/ver_usuario', methods=['GET'])
 def ver_usuario():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM usuarios")
