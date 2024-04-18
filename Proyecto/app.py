@@ -64,6 +64,9 @@ def guardar():
             if departamento_encontrado == "jefe" and contraseña_encontrada == "jefe1234":
                 # Si es jefe, redirigir a la página de jefe
                 return redirect(url_for('jefe'))
+            if departamento_encontrado == "auxiliar" and contraseña_encontrada == "aux1234":
+                # Si es auxiliar, redirigir a la página de jefe
+                return redirect(url_for('auxiliar'))
             else:
               # Si no es jefe, redirigir a la página de cliente
                 return redirect(url_for('cliente'))
@@ -381,6 +384,56 @@ def mostrar_usuarios():
     usuarios = cur.fetchall()
     cur.close()
     return render_template('usuarios.html', usuarios=usuarios)
+
+@app.route('/perfil_auxiliar')
+def perfil_auxiliar():
+    # Consultar la base de datos para obtener la información del usuario con ID 4
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM usuarios WHERE id = 4")
+    usuario = cur.fetchone()  # Obtener el primer usuario encontrado (debería ser el único con ID 4)
+    cur.close()
+
+    # Renderizar la plantilla HTML y pasar los datos del usuario
+    return render_template('PerfilAuxiliar.html', usuario=usuario)
+
+@app.route('/editarPerfil/<int:id>', methods=['GET', 'POST'])
+def editarPerfil(id):
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario de edición
+        nombre = request.form['nombre']
+        email = request.form['email']
+        
+        # Actualizar el departamento en la base de datos
+        cur.execute("UPDATE Usuarios SET nombre = %s, email = %s WHERE id = %s", (nombre, email, id))
+        mysql.connection.commit()
+        
+        flash('Perfil actualizado correctamente', 'success')
+    
+    # Obtener los datos del departamento a editar
+    cur.execute("SELECT * FROM Usuarios WHERE id = %s", (id,))
+    usuarios = cur.fetchone()
+    cur.close()
+    
+    return render_template('editarPerfil.html', usuarios=usuarios)
+
+@app.route('/control_tickets', methods=['GET', 'POST'])
+def control_tickets():
+    if request.method == 'POST':
+        # Lógica para filtrar y ordenar las solicitudes por fecha
+        ordenamiento = request.form['ordenamiento']
+        # Actualiza tu consulta SQL según el ordenamiento seleccionado
+
+    # Lógica para obtener las solicitudes
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, departamento, tipo_soporte, detalles, fecha FROM solicitudes WHERE departamento = 'auxiliar'")
+    solicitudes = cur.fetchall()
+    cur.close()
+
+    return render_template('ControlTickets.html', solicitudes=solicitudes)
+
+
 
 
 if __name__ == '__main__':

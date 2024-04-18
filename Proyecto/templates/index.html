@@ -92,7 +92,7 @@
                     <option value="produccion">Producción</option>
                     <option value="ventas">Ventas</option>
                     <option value="jefe">Jefe</option>
-                    <option value="jefe">Auxiliar</option>
+                    <option value="auxiliar">Auxiliar</option>
                 </select>
                 <div id="departamento-error" class="error"></div> <!-- Error message for department -->
             </div>
@@ -136,13 +136,17 @@
 
                 // Determinar la URL de redireccionamiento según el departamento seleccionado
                 switch (departamento) {
-                    case 'jefe':
-                        urlRedireccion = '/jefe';
-                        break;
-                    default:
-                        urlRedireccion = '/cliente';
-                        break;
-                }
+    case 'jefe':
+        urlRedireccion = '/jefe';
+        break;
+    case 'auxiliar':
+        urlRedireccion = '/auxiliar';
+        break;
+    default:
+        urlRedireccion = '/cliente'; // Redirect all other departments to the client page
+        break;
+}
+
 
                 // Mostrar SweetAlert de bienvenida
                 Swal.fire({

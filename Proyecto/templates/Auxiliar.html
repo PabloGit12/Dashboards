@@ -57,13 +57,13 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form action="" method="GET">
+                <form action="{{ url_for('perfil_auxiliar') }}" method="GET">
                     <button type="submit" class="btn btn-outline-info btn-block">Perfil Auxiliar</button>
                 </form>
             </div>
             
             <div class="col-md-6">
-                <form action="" method="GET">
+                <form action="{{ url_for('control_tickets') }}" method="GET">
                     <button type="submit" class="btn btn-outline-success btn-block">Control tickets</button>
                 </form>
             </div>
@@ -77,7 +77,7 @@
                 </div>
 
             <div class="col-md-6">
-                <form action="" method="GET">
+                <form action="{{ url_for('consultas') }}" method="GET">
                     <button type="submit" class="btn btn-outline-success btn-block">Consultar</button>
                 </form>
             </div>

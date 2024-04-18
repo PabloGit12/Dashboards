@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Agregar SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <title>Perfil Auxiliar</title>
+    <style>
+        body {
+            background: url(../static/FONDO.jpg) center/cover no-repeat fixed;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .logo {
+            max-width: 210px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #800080;
+            text-align: center;
+            font-weight: bold;
+            font-size: 2em;
+            font-family: 'QuickSand', sans-serif;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            color: #3d2e3e;
+        }
+
+        button {
+            width: 100%;
+            background-color: #343a40;
+            color: white;
+            border: 1px solid #771752;
+        }
+
+        button:hover {
+            background-color: #6f42c1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Perfil</h1>
+    
+        <!-- Tabla de registros -->
+        <table class="table table-striped">
+            <!-- Cabecera de la tabla -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Perfil</th>
+                    <th>Email</th>
+                    <th>Foto de Perfil</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ usuario[0] }}</td> <!-- ID -->
+                    <td>{{ usuario[1] }}</td> <!-- Nombre del Departamento -->
+                    <td>{{ usuario[2] }}</td> <!-- Responsable -->
+                    <td>
+                        <!-- Mostrar imagen de perfil -->
+                        <img src="https://img.freepik.com/foto-gratis/chico-guapo-seguro-posando-contra-pared-blanca_176420-32936.jpg" alt="Foto de Perfil" style="max-width: 100px;">
+                    </td>
+                    <td>
+                        <a href="{{ url_for('editarPerfil', id=usuario[0]) }}" class="btn btn-info btn-sm">Editar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{{ url_for('auxiliar')}}" class="btn btn-secondary mt-3">Regresar a Menu Principal</a>
+    </div>
+</body>
+</html>
